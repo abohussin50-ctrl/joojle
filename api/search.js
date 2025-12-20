@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   }
 
   // جلب مفتاح API و CX من المتغيرات البيئية
-  const API_KEY = process.env.GOOGLE_API_KEY;
+  const API_KEY = process.env.API_KEY;
   const CX = process.env.GOOGLE_CX;
 
   if (!API_KEY || !CX) {
