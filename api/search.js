@@ -1,5 +1,4 @@
-// api/search.js
-import fetch from "node-fetch"; // إذا كنت تستخدم Node.js 24 على Vercel
+import fetch from "node-fetch"; // Node.js 24 على Vercel
 
 export default async function handler(req, res) {
   // دعم GET فقط
@@ -23,7 +22,7 @@ export default async function handler(req, res) {
   try {
     // استدعاء Google Custom Search API
     const response = await fetch(
-      `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}`
+      `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&num=10`
     );
 
     if (!response.ok) {
@@ -32,8 +31,15 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    // إرجاع النتائج فقط
-    res.status(200).json(data.items || []);
+
+    // تحويل النتائج لتحتوي فقط على title, link, snippet
+    const results = (data.items || []).map(item => ({
+      title: item.title || "",
+      link: item.link || "",
+      snippet: item.snippet || ""
+    }));
+
+    res.status(200).json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
