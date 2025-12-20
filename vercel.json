@@ -2,11 +2,32 @@
   "version": 2,
   "functions": {
     "api/**/*.js": {
-      "maxDuration": 15
+      "runtime": "nodejs24.x",
+      "maxDuration": 10
     }
   },
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "images.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/images", "destination": "/images.html" }
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/images",
+      "destination": "/images.html"
+    }
   ]
 }
