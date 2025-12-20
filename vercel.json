@@ -2,19 +2,10 @@
   "version": 2,
   "functions": {
     "api/**/*.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs18.x",
+      "maxDuration": 10
     }
   },
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/images",
-      "destination": "/images.html"
-    }
-  ],
   "builds": [
     {
       "src": "index.html",
@@ -27,6 +18,16 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/images",
+      "destination": "/images.html"
     }
   ]
 }
