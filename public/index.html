@@ -21,113 +21,116 @@
     .delete-btn { position:absolute; top:-8px; right:-8px; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; display:none; }
     .shortcut:hover .delete-btn { display:block; }
     .customize { position:fixed; bottom:20px; left:20px; background-color:#ffe8dc; padding:8px 14px; border-radius:999px; font-size:14px; box-shadow:0 1px 4px rgba(0,0,0,0.2); display:flex; align-items:center; gap:5px; cursor:pointer; }
+    #results .result-item { max-width:700px; margin:20px auto; text-align:right; border-bottom:1px solid #eee; padding-bottom:15px; }
+    #results .result-item img { max-width:100px; max-height:100px; margin-left:10px; vertical-align:middle; }
   </style>
 </head>
 <body>
 
-  <header>
-    <a href="https://mail.google.com" target="_blank">Gmail</a>
-    <a href="images.html">صور</a>
-  </header>
+<header>
+  <a href="https://mail.google.com" target="_blank">Gmail</a>
+  <a href="images.html">صور</a>
+</header>
 
-  <div class="logo">
-    <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
+<div class="logo">
+  <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
+</div>
+
+<div class="search-box">
+  <input
+    id="searchInput"
+    type="text"
+    placeholder="ابحث في الويب..."
+    oninput="autocomplete()"
+    onkeydown="if(event.key==='Enter')search()"
+    style="width:100%; padding:14px 20px; border-radius:30px; border:1px solid #ddd; font-size:16px; box-shadow:0 1px 6px rgba(32,33,36,0.28); outline:none;"
+  />
+  <div id="suggestions"></div>
+</div>
+
+<div id="results"></div>
+
+<div class="shortcuts" id="shortcuts">
+  <div class="shortcut" onclick="addShortcut()"><div class="shortcut-circle">+</div><div>إضافة اختصار</div></div>
+  <div class="shortcut" onclick="copyLink()"><div class="shortcut-circle">S</div><div>مشاركة</div></div>
+  <div class="shortcut" onclick="window.open('https://chrome.google.com/webstore', '_blank')">
+    <div class="shortcut-circle"><img src="https://ssl.gstatic.com/gb/images/bar/al-icon.png" alt="icon"></div><div>السوق الإلكتروني</div>
   </div>
+</div>
 
-  <div class="search-box">
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="ابحث في الويب..."
-      oninput="autocomplete()"
-      onkeydown="if(event.key==='Enter')search()"
-      style="width:100%; padding:14px 20px; border-radius:30px; border:1px solid #ddd; font-size:16px; box-shadow:0 1px 6px rgba(32,33,36,0.28); outline:none;"
-    />
-    <div id="suggestions"></div>
-  </div>
+<div class="customize" onclick="alert('هذه ميزة تخصيص الواجهة قيد التطوير!')">🖌 تخصيص Chrome</div>
 
-  <div id="results"></div>
+<script>
+function copyLink(){navigator.clipboard.writeText(window.location.href).then(()=>{alert("تم نسخ الرابط إلى الحافظة!");});}
 
-  <div class="shortcuts" id="shortcuts">
-    <div class="shortcut" onclick="addShortcut()"><div class="shortcut-circle">+</div><div>إضافة اختصار</div></div>
-    <div class="shortcut" onclick="copyLink()"><div class="shortcut-circle">S</div><div>مشاركة</div></div>
-    <div class="shortcut" onclick="window.open('https://chrome.google.com/webstore', '_blank')">
-      <div class="shortcut-circle"><img src="https://ssl.gstatic.com/gb/images/bar/al-icon.png" alt="icon"></div><div>السوق الإلكتروني</div>
+function createShortcutElement(name,url){
+  const div=document.createElement("div"); div.className="shortcut"; div.onclick=()=>window.open(url,"_blank");
+  const circle=document.createElement("div"); circle.className="shortcut-circle"; circle.textContent=name.charAt(0).toUpperCase();
+  const label=document.createElement("div"); label.textContent=name;
+  const del=document.createElement("button"); del.className="delete-btn"; del.textContent="×"; del.title="حذف";
+  del.onclick=(e)=>{ e.stopPropagation(); if(confirm(`هل تريد حذف "${name}"؟`)){ div.remove(); let saved=JSON.parse(localStorage.getItem("shortcuts")||"[]"); saved=saved.filter(s=>s.name!==name||s.url!==url); localStorage.setItem("shortcuts",JSON.stringify(saved)); } };
+  div.appendChild(circle); div.appendChild(label); div.appendChild(del);
+  return div;
+}
+
+function addShortcut(){
+  const name=prompt("ما اسم الموقع؟"); if(!name)return;
+  const url=prompt("ما رابط الموقع؟"); if(!url||!url.startsWith("http")){ alert("يرجى إدخال رابط صحيح يبدأ بـ http"); return; }
+  const container=document.getElementById("shortcuts"); const shortcut=createShortcutElement(name,url); container.insertBefore(shortcut,container.firstChild);
+  let saved=JSON.parse(localStorage.getItem("shortcuts")||"[]"); saved.push({name,url}); localStorage.setItem("shortcuts",JSON.stringify(saved));
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  const saved=JSON.parse(localStorage.getItem("shortcuts")||"[]"); const container=document.getElementById("shortcuts");
+  saved.reverse().forEach(({name,url})=>{ const shortcut=createShortcutElement(name,url); container.insertBefore(shortcut,container.firstChild); });
+});
+</script>
+
+<script>
+const API_BASE = ""; // نسبي، يعمل على localhost و Vercel
+
+async function search(){
+  const q=document.getElementById("searchInput").value;
+  if(!q)return;
+
+  const res=await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(q)}`);
+  const data=await res.json();
+
+  document.getElementById("results").innerHTML=data.map(r=>`
+    <div class="result-item">
+      ${r.image ? `<img src="${r.image}" alt="image">` : ""}
+      <a href="${r.link}" target="_blank" style="color:#1a0dab;font-size:18px;text-decoration:none">${r.title}</a>
+      <p style="color:#4d5156">${r.snippet}</p>
     </div>
-  </div>
+  `).join("");
+}
 
-  <div class="customize" onclick="alert('هذه ميزة تخصيص الواجهة قيد التطوير!')">🖌 تخصيص Chrome</div>
+async function autocomplete(){
+  const q=document.getElementById("searchInput").value;
+  if(q.length<2)return;
 
-  <script>
-    function copyLink(){navigator.clipboard.writeText(window.location.href).then(()=>{alert("تم نسخ الرابط إلى الحافظة!");});}
+  const res=await fetch(`${API_BASE}/api/autocomplete?q=${q}`);
+  const data=await res.json();
 
-    function createShortcutElement(name,url){
-      const div=document.createElement("div"); div.className="shortcut"; div.onclick=()=>window.open(url,"_blank");
-      const circle=document.createElement("div"); circle.className="shortcut-circle"; circle.textContent=name.charAt(0).toUpperCase();
-      const label=document.createElement("div"); label.textContent=name;
-      const del=document.createElement("button"); del.className="delete-btn"; del.textContent="×"; del.title="حذف";
-      del.onclick=(e)=>{ e.stopPropagation(); if(confirm(`هل تريد حذف "${name}"؟`)){ div.remove(); let saved=JSON.parse(localStorage.getItem("shortcuts")||"[]"); saved=saved.filter(s=>s.name!==name||s.url!==url); localStorage.setItem("shortcuts",JSON.stringify(saved)); } };
-      div.appendChild(circle); div.appendChild(label); div.appendChild(del);
-      return div;
-    }
+  document.getElementById("suggestions").innerHTML=`
+    <div style="background:#fff;border:1px solid #ddd;border-radius:10px">
+      ${data.map(s=>`<div onclick="selectSuggestion('${s}')"
+        style="padding:8px;cursor:pointer">${s}</div>`).join("")}
+    </div>
+  `;
+}
 
-    function addShortcut(){
-      const name=prompt("ما اسم الموقع؟"); if(!name)return;
-      const url=prompt("ما رابط الموقع؟"); if(!url||!url.startsWith("http")){ alert("يرجى إدخال رابط صحيح يبدأ بـ http"); return; }
-      const container=document.getElementById("shortcuts"); const shortcut=createShortcutElement(name,url); container.insertBefore(shortcut,container.firstChild);
-      let saved=JSON.parse(localStorage.getItem("shortcuts")||"[]"); saved.push({name,url}); localStorage.setItem("shortcuts",JSON.stringify(saved));
-    }
+function selectSuggestion(text){ document.getElementById("searchInput").value=text; document.getElementById("suggestions").innerHTML=""; search(); }
 
-    window.addEventListener("DOMContentLoaded",()=>{
-      const saved=JSON.parse(localStorage.getItem("shortcuts")||"[]"); const container=document.getElementById("shortcuts");
-      saved.reverse().forEach(({name,url})=>{ const shortcut=createShortcutElement(name,url); container.insertBefore(shortcut,container.firstChild); });
-    });
-  </script>
-
-  <script>
-    const API_BASE = ""; // نسبي، يعمل على localhost و Vercel
-
-    async function search(){
-      const q=document.getElementById("searchInput").value;
-      if(!q)return;
-
-      const res=await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(q)}`);
-      const data=await res.json();
-
-      document.getElementById("results").innerHTML=data.map(r=>`
-        <div style="max-width:700px;margin:20px auto;text-align:right">
-          <a href="${r.link}" target="_blank" style="color:#1a0dab;font-size:18px;text-decoration:none">${r.title}</a>
-          <p style="color:#4d5156">${r.snippet}</p>
-        </div>
-      `).join("");
-    }
-
-    async function autocomplete(){
-      const q=document.getElementById("searchInput").value;
-      if(q.length<2)return;
-
-      const res=await fetch(`${API_BASE}/api/autocomplete?q=${q}`);
-      const data=await res.json();
-
-      document.getElementById("suggestions").innerHTML=`
-        <div style="background:#fff;border:1px solid #ddd;border-radius:10px">
-          ${data.map(s=>`<div onclick="selectSuggestion('${s}')"
-            style="padding:8px;cursor:pointer">${s}</div>`).join("")}
-        </div>
-      `;
-    }
-
-    function selectSuggestion(text){ document.getElementById("searchInput").value=text; document.getElementById("suggestions").innerHTML=""; search(); }
-
-    async function summarize(content){
-      const res=await fetch(`${API_BASE}/api/ai/summary`,{
-        method:"POST",
-        body:JSON.stringify({content:decodeURIComponent(content)})
-      });
-      const data=await res.json();
-      alert("✨ التلخيص:\n\n"+data.summary);
-    }
-  </script>
+async function summarize(content){
+  const res=await fetch(`${API_BASE}/api/ai/summary`,{
+    method:"POST",
+    body:JSON.stringify({content:decodeURIComponent(content)})
+  });
+  const data=await res.json();
+  alert("✨ التلخيص:\n\n"+data.summary);
+}
+</script>
 
 </body>
 </html>
