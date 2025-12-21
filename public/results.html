@@ -116,12 +116,20 @@ async function searchResults() {
 
     container.innerHTML = '';
 
-    if (!data || data.length === 0) {
+    // التأكد من أن البيانات مصفوفة
+    let results = [];
+    if (Array.isArray(data)) {
+      results = data;
+    } else if (data.items && Array.isArray(data.items)) {
+      results = data.items;
+    }
+
+    if (results.length === 0) {
       container.innerHTML = '<p>لا توجد نتائج.</p>';
       return;
     }
 
-    data.forEach(item => {
+    results.forEach(item => {
       const div = document.createElement('div');
       div.className = 'result';
       div.innerHTML = `
@@ -145,7 +153,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
-
 
 </body>
 </html>
