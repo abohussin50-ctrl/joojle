@@ -37,14 +37,31 @@
 </div>
 
 <div class="search-box">
-  <input
-    id="searchInput"
-    type="text"
-    placeholder="ابحث في الويب..."
-    oninput="autocomplete()"
-    onkeydown="if(event.key==='Enter')search()"
-    style="width:100%; padding:14px 20px; border-radius:30px; border:1px solid #ddd; font-size:16px; box-shadow:0 1px 6px rgba(32,33,36,0.28); outline:none;"
-  />
+<input
+  id="searchInput"
+  type="text"
+  placeholder="ابحث في الويب..."
+  onkeydown="handleEnter(event)"
+  style="width:100%; padding:14px 20px; border-radius:30px; border:1px solid #ddd; font-size:16px; box-shadow:0 1px 6px rgba(32,33,36,0.28); outline:none;"
+/>
+
+<script>
+function handleEnter(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault(); // يمنع السلوك الافتراضي (إرسال الفورم أو إعادة تحميل الصفحة)
+    const query = document.getElementById("searchInput").value;
+    if (!query) return;
+    
+    // فتح صفحة النتائج مع تمرير الكلمة في الـ URL
+    window.location.href = `results.html?q=${encodeURIComponent(query)}`;
+    
+    // الكلمة تبقى في مربع البحث
+    // إذا أردت، يمكنك إعادة تعيين القيمة هنا:
+    // document.getElementById("searchInput").value = query;
+  }
+}
+</script>
+
   <div id="suggestions"></div>
 </div>
 
