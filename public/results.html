@@ -91,7 +91,7 @@
 <div id="results"></div>
 
 <script>
-const API_BASE = "https://joojle-one.vercel.app";
+const API_BASE = "https://joojle-one.vercel.app/api/search?q=";
 
 // قراءة الكلمة من URL
 function getQueryParam(param) {
@@ -103,19 +103,40 @@ async function searchResults() {
   const q = document.getElementById("searchInput").value.trim();
   if (!q) return;
 
-  const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(q)}`);
-  const data = await res.json();
+  // تحديث URL بدون إعادة تحميل الصفحة
+  const newUrl = `${window.location.pathname}?q=${encodeURIComponent(q)}`;
+  window.history.replaceState(null, '', newUrl);
 
-  document.getElementById("results").innerHTML = data.map(r => `
-    <div class="result">
-      <a href="${r.link}" target="_blank">${r.title}</a>
-      <p>${r.snippet}</p>
-      ${r.image ? `<img src="${r.image}" alt="${r.title}"/>` : ""}
-    </div>
-  `).join("");
+  const container = document.getElementById("results");
+  container.innerHTML = '<p>جاري البحث...</p>';
+
+  try {
+    const res = await fetch(`${API_BASE}${encodeURIComponent(q)}`);
+    const data = await res.json();
+
+    container.innerHTML = '';
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p>لا توجد نتائج.</p>';
+      return;
+    }
+
+    data.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'result';
+      div.innerHTML = `
+        <a href="${item.link}" target="_blank">${item.title}</a>
+        <p>${item.snippet || ''}</p>
+        ${item.image ? `<img src="${item.image}" alt="${item.title}"/>` : ""}
+      `;
+      container.appendChild(div);
+    });
+  } catch (err) {
+    container.innerHTML = `<p>حدث خطأ أثناء البحث: ${err.message}</p>`;
+  }
 }
 
-// عند التحميل، نسخ الكلمة من URL إلى مربع البحث وتشغيل البحث
+// عند التحميل، ضع الكلمة في مربع البحث وشغّل البحث تلقائيًا
 window.addEventListener("DOMContentLoaded", () => {
   const q = getQueryParam("q");
   if (q) {
@@ -124,6 +145,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
 
 </body>
 </html>
