@@ -1,3 +1,4 @@
+// /api/search.js
 import fetch from "node-fetch"; // Node.js 24 على Vercel
 
 export default async function handler(req, res) {
@@ -20,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // استدعاء Google Custom Search API
+    // استدعاء Google Custom Search API للبحث العام
     const response = await fetch(
       `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&num=10`
     );
@@ -32,11 +33,13 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // تحويل النتائج لتحتوي فقط على title, link, snippet
+    // تحويل النتائج لتحتوي فقط على title, link, snippet, optional image
     const results = (data.items || []).map(item => ({
       title: item.title || "",
       link: item.link || "",
-      snippet: item.snippet || ""
+      snippet: item.snippet || "",
+      image: item.pagemap?.cse_image?.[0]?.src || null // صور إذا وجدت
+      // لاحقًا يمكن إضافة الفيديو: item.pagemap?.videoobject?.[0]?.embedurl || null
     }));
 
     res.status(200).json(results);
