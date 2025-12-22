@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بحث الصور - joojle</title>
   <link rel="icon" href="favicon.png" type="image/png">
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f5f5f5;
-      text-align: center;
       direction: rtl;
     }
 
@@ -27,13 +27,6 @@
       text-decoration: none;
       color: #4285F4;
       font-weight: bold;
-      margin: 0 10px;
-    }
-
-    h1 {
-      margin: 20px 0;
-      font-size: 28px;
-      color: #333;
     }
     .logo { font-size:25px; font-weight:bold; margin-top:-1px; }
     .blue{color:#4285F4} .red{color:#EA4335} .yellow{color:#FBBC05} .green{color:#34A853}
@@ -44,6 +37,11 @@
       justify-content: center;
     }
 
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+	
     .search-box input {
       width: 100%;
       padding: 12px 20px;
@@ -55,63 +53,262 @@
       text-align: right;
     }
 
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 6px rgba(32,33,36,.28);
+  max-width: 600px;
+  margin: auto;
+}
+
+.search-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 10px;
+  direction: rtl;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: #5f6368;
+  fill: none;
+  stroke-width: 2;
+}
+
+.icon-btn:hover svg {
+  stroke: #1a73e8;
+}
+
+    /* الفلاتر */
+    .filters {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 15px auto;
+    }
+
+    .filters select {
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* الصور */
     #imgs {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      max-width: 1200px;
-      margin: 30px auto;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      max-width: 1300px;
+      margin: 20px auto;
+      padding: 10px;
     }
 
-    #imgs a img {
-      width: 100%;
+    .img-item {
       border-radius: 12px;
-      transition: transform 0.2s;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
     }
 
-    #imgs a img:hover {
+    .img-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .2s;
+    }
+
+    .img-item:hover img {
       transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    footer {
-      margin-top: 40px;
-      padding: 20px;
+    /* Load more */
+    .load-more {
+      display: block;
+      margin: 30px auto;
+      padding: 10px 24px;
+      border-radius: 30px;
+      border: 1px solid #ddd;
       background: #fff;
-      color: #555;
-      font-size: 14px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 600px) {
+      #imgs {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <a href="index.html">الرئيسية</a>
-<div class="logo">
-  <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
-</div>
-  </header>
-
-  <h1>ابحث عن الصور</h1>
-
-  <div class="search-box">
-    <input type="text" id="q" placeholder="ابحث في الصور..." onkeydown="if(event.key==='Enter') search()">
+<header>
+  <a href="index.html">الرئيسية</a>
+  <div class="logo">
+    <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
   </div>
+</header>
 
-  <div id="imgs"></div>
-  <script>
-    async function search(){
-      const q = document.getElementById("q").value.trim();
-      if(!q) return;
-      const res = await fetch(`/api/images/search?q=${encodeURIComponent(q)}`);
-      const data = await res.json();
-      document.getElementById("imgs").innerHTML =
-        data.map(i => `
-          <a href="${i.url}" target="_blank">
-            <img src="${i.img}" alt="Image">
-          </a>
-        `).join("");
-    }
-  </script>
+<h1>بحث الصور</h1>
+
+<div class="search-box">
+  <div class="search-wrapper">
+    
+    <!-- زر البحث -->
+    <button class="icon-btn" onclick="searchResults()" title="بحث">
+      <svg viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="16.65" y1="16.65" x2="22" y2="22"></line>
+      </svg>
+    </button>
+
+    <!-- input -->
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="ابحث في الصور..."
+      onkeydown="if(event.key==='Enter')searchResults()"
+    />
+
+    <!-- بحث صوتي -->
+    <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
+        <path d="M19 11a7 7 0 0 1-14 0"/>
+        <line x1="12" y1="18" x2="12" y2="22"/>
+        <line x1="8" y1="22" x2="16" y2="22"/>
+      </svg>
+    </button>
+
+    <!-- بحث بالصورة -->
+    <button class="icon-btn" onclick="imageSearch()" title="بحث بالصورة">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <circle cx="9" cy="10" r="2"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+    </button>
+
+    <input type="file" id="imageInput" accept="image/*" hidden />
+
+  </div>
+</div>
+
+<!-- الفلاتر -->
+<div class="filters">
+  <select id="size">
+    <option value="">الحجم</option>
+    <option value="small">صغير</option>
+    <option value="medium">متوسط</option>
+    <option value="large">كبير</option>
+  </select>
+
+  <select id="color">
+    <option value="">اللون</option>
+    <option value="color">ملون</option>
+    <option value="gray">أبيض وأسود</option>
+  </select>
+
+  <select id="type">
+    <option value="">النوع</option>
+    <option value="photo">صور</option>
+    <option value="clipart">رسومات</option>
+  </select>
+</div>
+
+<div id="imgs"></div>
+<button class="load-more" onclick="loadMore()">تحميل المزيد</button>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg">
+</div>
+
+<script>
+let page = 1;
+let lastQuery = "";
+
+async function startSearch(){
+  page = 1;
+  document.getElementById("imgs").innerHTML = "";
+  search();
+}
+
+async function loadMore(){
+  page++;
+  search();
+}
+
+async function search(){
+  const q = document.getElementById("q").value.trim();
+  if(!q) return;
+  lastQuery = q;
+
+  const size = document.getElementById("size").value;
+  const color = document.getElementById("color").value;
+  const type = document.getElementById("type").value;
+
+  const res = await fetch(
+    `/api/images/search?q=${encodeURIComponent(q)}&page=${page}&size=${size}&color=${color}&type=${type}`
+  );
+
+  const data = await res.json();
+
+  const container = document.getElementById("imgs");
+  data.forEach(i => {
+    const div = document.createElement("div");
+    div.className = "img-item";
+    div.innerHTML = `<img src="${i.img}" alt="">`;
+    div.onclick = () => openLightbox(i.img);
+    container.appendChild(div);
+  });
+}
+
+function openLightbox(src){
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightbox").style.display = "flex";
+}
+
+function closeLightbox(){
+  document.getElementById("lightbox").style.display = "none";
+}
+</script>
+
 </body>
 </html>
