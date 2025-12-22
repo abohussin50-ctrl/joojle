@@ -2,11 +2,15 @@
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
+  // دعم GET فقط
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const q = req.query.q;
+  // استلام معامل start من الرابط، وإذا لم يوجد نفترض أنه 1 (البداية)
+  const start = req.query.start || 1;
+
   if (!q || q.trim() === "") {
     return res.status(400).json({ error: "Query parameter 'q' is required" });
   }
@@ -19,26 +23,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    // تم إضافة searchType=image لتخصيص البحث للصور فقط
-    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=10`;
+    // تم إضافة &start=${start} لتمكين نظام الصفحات (تحميل المزيد)
+    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=10&start=${start}`;
 
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
-      const text = await response.text();
-      return res.status(response.status).json({ error: text });
+      const data = await response.json();
+      return res.status(response.status).json({ error: data.error?.message || "Google API Error" });
     }
 
     const data = await response.json();
 
-    // تنسيق النتائج لتناسب بيانات الصور
+    // تنسيق النتائج
     const results = (data.items || []).map(item => ({
       title: item.title || "",
-      link: item.link || "",             // رابط الصورة المباشر
-      displayLink: item.displayLink || "", // الموقع المصدر
+      link: item.link || "",             // رابط الصورة المباشر (Full Image)
+      displayLink: item.displayLink || "", 
       snippet: item.snippet || "",
-      thumbnail: item.image?.thumbnailLink || "", // الصورة المصغرة
-      context: item.image?.contextLink || ""      // صفحة الويب التي تحتوي الصورة
+      thumbnail: item.image?.thumbnailLink || "", // الصورة المصغرة للتحميل السريع
+      context: item.image?.contextLink || ""      
     }));
 
     res.status(200).json(results);
