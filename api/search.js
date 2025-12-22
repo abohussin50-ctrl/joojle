@@ -1,18 +1,18 @@
 // /api/search.js
-import fetch from "node-fetch"; // Node.js 24 على Vercel
+import fetch from "node-fetch"; 
 
 export default async function handler(req, res) {
-  // دعم GET فقط
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const q = req.query.q;
+  const start = req.query.start || 1;
+
   if (!q || q.trim() === "") {
     return res.status(400).json({ error: "Query parameter 'q' is required" });
   }
 
-  // جلب مفتاح API و CX من المتغيرات البيئية
   const API_KEY = process.env.GOOGLE_API_KEY;
   const CX = process.env.GOOGLE_CX;
 
@@ -21,25 +21,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    // استدعاء Google Custom Search API للبحث العام
-    const response = await fetch(
-      `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&num=10`
-    );
+    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&num=10&start=${start}`;
+
+    const response = await fetch(apiUrl);
 
     if (!response.ok) {
-      const text = await response.text();
-      return res.status(response.status).json({ error: text });
+      const errorData = await response.json();
+      return res.status(response.status).json({ error: errorData.error?.message || "Google API Error" });
     }
 
     const data = await response.json();
 
-    // تحويل النتائج لتحتوي فقط على title, link, snippet, optional image
     const results = (data.items || []).map(item => ({
       title: item.title || "",
       link: item.link || "",
       snippet: item.snippet || "",
-      image: item.pagemap?.cse_image?.[0]?.src || null // صور إذا وجدت
-      // لاحقًا يمكن إضافة الفيديو: item.pagemap?.videoobject?.[0]?.embedurl || null
+      image: item.pagemap?.cse_image?.[0]?.src || null 
     }));
 
     res.status(200).json(results);
