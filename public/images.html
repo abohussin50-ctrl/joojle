@@ -298,78 +298,85 @@ async function loadModel() {
 }
 loadModel();
 
-let page = 1;
-let currentQuery = "";
-let imageSearchMode = false;
-let uploadedImageBase64 = "";
 
-function openImageSearch(){
-  document.getElementById("imageInput").click();
+function imageSearch() {
+    document.getElementById("imageInput").click();
 }
 
-function imageSearch(file){
-  if(!file) return;
+document.getElementById("imageInput").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = async () => {
-    uploadedImageBase64 = reader.result;
-    page = 1;
-    imageSearchMode = true;
-    document.getElementById("imgs").innerHTML = "";
-    fetchImages();
-  };
-  reader.readAsDataURL(file);
-}
+    const container = document.getElementById("imgs");
+    const searchInput = document.getElementById("searchInput");
+    
+    // إظهار حالة التحميل
+    container.innerHTML = `
+        <div style="text-align:center; padding: 20px;">
+            <p>🔄 جاري تحليل الصورة...</p>
+            <div class="spinner"></div> 
+        </div>`;
 
-async function startSearch(){
-  imageSearchMode = false;
-  page = 1;
-  document.getElementById("imgs").innerHTML = "";
-  currentQuery = document.getElementById("searchInput").value.trim();
-  if(!currentQuery) return;
-  fetchImages();
-}
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const imgElement = new Image();
+        imgElement.src = event.target.result;
 
-async function loadMore(){
-  page++;
-  fetchImages();
-}
+        imgElement.onload = async () => {
+            try {
+                // التأكد من تحميل الموديل
+                if (!classifier) classifier = await ml5.imageClassifier('MobileNet');
 
-async function fetchImages(){
-  let res;
+                // طلب أفضل 3 نتائج للتحليل
+                const results = await classifier.classify(imgElement, 3);
 
-  if(imageSearchMode){
-    res = await fetch("/api/images/search",{
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        image: uploadedImageBase64,
-        page
-      })
-    });
-  } else {
-    res = await fetch(`/api/images/search?q=${encodeURIComponent(currentQuery)}&page=${page}`);
+                // معالجة النص: نأخذ الكلمة الأساسية فقط ونبتعد عن التفاصيل المعقدة
+                // مثال: "Egyptian cat, house cat" تصبح "Egyptian cat"
+                let mainLabel = results[0].label.split(',')[0];
+                let secondLabel = results[1].label.split(',')[0];
+
+                // إذا كانت نسبة التأكد ضعيفة (أقل من 40%)، ندمج نتيجتين لتحسين البحث
+                let finalQuery = mainLabel;
+                if (results[0].confidence < 0.4) {
+                    finalQuery = `${mainLabel} ${secondLabel}`;
+                }
+
+                // تحديث واجهة المستخدم بالنتائج
+                searchInput.value = finalQuery;
+                lastQuery = finalQuery;
+                currentStart = 1;
+
+                console.log("النتائج المقترحة:", results);
+                console.log("كلمة البحث النهائية:", finalQuery);
+
+                // تنفيذ البحث
+                await performSearch(true);
+
+            } catch (err) {
+                console.error("Analysis Error:", err);
+                container.innerHTML = "<p style='text-align:center; color:red;'>❌ فشل الذكاء الاصطناعي في التعرف على الصورة. حاول استخدام صورة أوضح.</p>";
+            }
+        };
+    };
+    reader.readAsDataURL(file);
+});
+window.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const q = urlParams.get("q");
+  
+  if (q) {
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) searchInput.value = q;
+    
+    // استدعاء دالة البحث عن الصور لديك (تأكد من اسمها في صفحة images)
+    if (typeof startSearch === "function") {
+        startSearch(); 
+    } else if (typeof performSearch === "function") {
+        lastQuery = q;
+        performSearch(true);
+    }
   }
-
-  const data = await res.json();
-  const container = document.getElementById("imgs");
-
-  data.forEach(img=>{
-    const div=document.createElement("div");
-    div.className="img-item";
-    div.innerHTML=`<img src="${img.img}" alt="">`;
-    div.onclick=()=>openLightbox(img.img);
-    container.appendChild(div);
-  });
-}
-
-function openLightbox(src){
-  document.getElementById("lightboxImg").src = src;
-  document.getElementById("lightbox").style.display="flex";
-}
-function closeLightbox(){
-  document.getElementById("lightbox").style.display="none";
-}
+});
 </script>
 
 </body>
