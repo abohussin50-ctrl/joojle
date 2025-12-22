@@ -220,7 +220,7 @@ async function startSearch(){
 async function performSearch(){
   try {
     // الاتصال بـ API الذي عدلناه (search.js)
-    const res = await fetch(`/api/search?q=${encodeURIComponent(lastQuery)}`);
+    const res = await fetch(`/api/images/search?q=${encodeURIComponent(lastQuery)}`);
     
     if (!res.ok) throw new Error("فشل في جلب النتائج");
     
