@@ -23,9 +23,10 @@
     .customize { position:fixed; bottom:20px; left:20px; background-color:#ffe8dc; padding:8px 14px; border-radius:999px; font-size:14px; box-shadow:0 1px 4px rgba(0,0,0,0.2); display:flex; align-items:center; gap:5px; cursor:pointer; }
     #results .result-item { max-width:700px; margin:20px auto; text-align:right; border-bottom:1px solid #eee; padding-bottom:15px; }
     #results .result-item img { max-width:100px; max-height:100px; margin-left:10px; vertical-align:middle; }
-	.search-wrapper {
+.search-wrapper {
   display: flex;
   align-items: center;
+  gap: 8px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 999px;
@@ -33,6 +34,8 @@
   box-shadow: 0 1px 6px rgba(32,33,36,.28);
   max-width: 600px;
   margin: auto;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .search-wrapper input {
@@ -40,8 +43,10 @@
   border: none;
   outline: none;
   font-size: 16px;
-  padding: 10px;
+  padding: 8px;
   direction: rtl;
+  background: transparent;
+  min-width: 0;
 }
 
 .icon-btn {
@@ -51,6 +56,8 @@
   padding: 6px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .icon-btn svg {
@@ -64,6 +71,27 @@
 .icon-btn:hover svg {
   stroke: #1a73e8;
 }
+@media (max-width: 480px) {
+  .search-wrapper {
+    padding: 6px 10px;
+    gap: 4px;
+  }
+
+  .search-wrapper input {
+    font-size: 15px;
+    padding: 6px;
+  }
+
+  .icon-btn {
+    padding: 4px;
+  }
+
+  .icon-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
   </style>
 </head>
 <body>
