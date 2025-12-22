@@ -308,6 +308,32 @@ function openLightbox(src){
 function closeLightbox(){
   document.getElementById("lightbox").style.display = "none";
 }
+	function voiceSearch() {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("البحث الصوتي غير مدعوم في هذا المتصفح");
+    return;
+  }
+
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = "ar-SA";
+  recognition.start();
+
+  recognition.onresult = function (event) {
+    const text = event.results[0][0].transcript;
+    document.getElementById("searchInput").value = text;
+    searchResults();
+  };
+}
+function imageSearch() {
+  document.getElementById("imageInput").click();
+}
+
+document.getElementById("imageInput").addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  alert("📷 تم اختيار صورة: " + file.name + "\n(يمكن ربطها ببحث ذكي لاحقًا)");
+});	
 </script>
 
 </body>
