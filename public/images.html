@@ -193,7 +193,7 @@
         <path d="M21 15l-5-5L5 21"/>
       </svg>
     </button>
-    <input type="file" id="imageInput" accept="image/*" hidden />
+   <input type="file" id="imageInput" accept="image/*" hidden onchange="imageSearch(this.files[0])">
   </div>
 </div>
 
@@ -298,37 +298,78 @@ async function loadModel() {
 }
 loadModel();
 
-async function imageSearch() {
+let page = 1;
+let currentQuery = "";
+let imageSearchMode = false;
+let uploadedImageBase64 = "";
+
+function openImageSearch(){
   document.getElementById("imageInput").click();
 }
 
-document.getElementById("imageInput").addEventListener("change", async function () {
-  const file = this.files[0];
-  if (!file) return;
+function imageSearch(file){
+  if(!file) return;
 
-  const formData = new FormData();
-  formData.append("image", file);
+  const reader = new FileReader();
+  reader.onload = async () => {
+    uploadedImageBase64 = reader.result;
+    page = 1;
+    imageSearchMode = true;
+    document.getElementById("imgs").innerHTML = "";
+    fetchImages();
+  };
+  reader.readAsDataURL(file);
+}
 
-  document.getElementById("imgs").innerHTML = "جاري البحث بالصورة...";
+async function startSearch(){
+  imageSearchMode = false;
+  page = 1;
+  document.getElementById("imgs").innerHTML = "";
+  currentQuery = document.getElementById("searchInput").value.trim();
+  if(!currentQuery) return;
+  fetchImages();
+}
 
-  const res = await fetch("/api/images/visual", {
-    method: "POST",
-    body: formData
-  });
+async function loadMore(){
+  page++;
+  fetchImages();
+}
+
+async function fetchImages(){
+  let res;
+
+  if(imageSearchMode){
+    res = await fetch("/api/images/search",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        image: uploadedImageBase64,
+        page
+      })
+    });
+  } else {
+    res = await fetch(`/api/images/search?q=${encodeURIComponent(currentQuery)}&page=${page}`);
+  }
 
   const data = await res.json();
-
   const container = document.getElementById("imgs");
-  container.innerHTML = "";
 
-  data.forEach(i => {
-    const div = document.createElement("div");
-    div.className = "img-item";
-    div.innerHTML = `<img src="${i.img}">`;
-    div.onclick = () => openLightbox(i.img);
+  data.forEach(img=>{
+    const div=document.createElement("div");
+    div.className="img-item";
+    div.innerHTML=`<img src="${img.img}" alt="">`;
+    div.onclick=()=>openLightbox(img.img);
     container.appendChild(div);
   });
-});
+}
+
+function openLightbox(src){
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightbox").style.display="flex";
+}
+function closeLightbox(){
+  document.getElementById("lightbox").style.display="none";
+}
 </script>
 
 </body>
