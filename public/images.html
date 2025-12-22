@@ -359,6 +359,23 @@ document.getElementById("imageInput").addEventListener("change", function (e) {
     };
     reader.readAsDataURL(file);
 });
+window.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const q = urlParams.get("q");
+  
+  if (q) {
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) searchInput.value = q;
+    
+    // استدعاء دالة البحث عن الصور لديك (تأكد من اسمها في صفحة images)
+    if (typeof startSearch === "function") {
+        startSearch(); 
+    } else if (typeof performSearch === "function") {
+        lastQuery = q;
+        performSearch(true);
+    }
+  }
+});  
 </script>
 
 </body>
