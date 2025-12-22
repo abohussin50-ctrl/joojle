@@ -93,6 +93,7 @@
 }
 
   </style>
+<script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 </head>
 <body>
 
@@ -290,6 +291,55 @@ async function summarize(content){
   const data=await res.json();
   alert("✨ التلخيص:\n\n"+data.summary);
 }
+let classifier;
+async function loadModel() {
+    if (typeof ml5 !== 'undefined') {
+        classifier = await ml5.imageClassifier('MobileNet');
+    }
+}
+loadModel();
+
+function imageSearch() {
+    document.getElementById("imageInput").click();
+}
+
+document.getElementById("imageInput").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // إظهار رسالة للمستخدم بأنه جاري تحليل الصورة قبل الانتقال
+    const searchInput = document.getElementById("searchInput");
+    searchInput.value = "جاري تحليل الصورة...";
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const imgElement = new Image();
+        imgElement.src = event.target.result;
+
+        imgElement.onload = async () => {
+            try {
+                // إذا لم يتم تحميل الموديل بعد، نقوم بتحميله
+                if (!classifier) classifier = await ml5.imageClassifier('MobileNet');
+
+                // تحليل الصورة
+                const results = await classifier.classify(imgElement);
+                
+                // تنظيف الكلمة الناتجة (أخذ أول كلمة إنجليزية)
+                let foundObject = results[0].label.split(',')[0].trim();
+
+                // التوجيه إلى صفحة images.html مع الكلمة الناتجة كـ Parameter
+                // سيتم البحث عنها تلقائياً هناك
+                window.location.href = `images.html?q=${encodeURIComponent(foundObject)}`;
+
+            } catch (err) {
+                console.error("خطأ في التحليل:", err);
+                alert("عذراً، لم نتمكن من التعرف على محتوى الصورة.");
+                searchInput.value = "";
+            }
+        };
+    };
+    reader.readAsDataURL(file);
+});  
 </script>
 
 </body>
