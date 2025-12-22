@@ -1,52 +1,44 @@
-// /api/search.js
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  // دعم GET فقط
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const q = req.query.q;
-  // استلام معامل start من الرابط، وإذا لم يوجد نفترض أنه 1 (البداية)
-  const start = req.query.start || 1;
-
-  if (!q || q.trim() === "") {
-    return res.status(400).json({ error: "Query parameter 'q' is required" });
-  }
 
   const API_KEY = process.env.GOOGLE_API_KEY;
   const CX = process.env.GOOGLE_CX;
 
-  if (!API_KEY || !CX) {
-    return res.status(500).json({ error: "Google API key or CX is missing" });
+  /* 🔍 بحث نصي */
+  if(req.method === "GET"){
+    const { q, page = 1 } = req.query;
+    if(!q) return res.json([]);
+
+    const start = (page - 1) * 10 + 1;
+
+    const r = await fetch(
+      `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&start=${start}`
+    );
+    const d = await r.json();
+
+    return res.json(
+      (d.items || []).map(i => ({ img: i.link }))
+    );
   }
 
-  try {
-    // تم إضافة &start=${start} لتمكين نظام الصفحات (تحميل المزيد)
-    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=10&start=${start}`;
+  /* 🖼️ بحث بالصورة */
+  if(req.method === "POST"){
+    const { image, page = 1 } = req.body;
+    if(!image) return res.json([]);
 
-    const response = await fetch(apiUrl);
+    const start = (page - 1) * 10 + 1;
 
-    if (!response.ok) {
-      const data = await response.json();
-      return res.status(response.status).json({ error: data.error?.message || "Google API Error" });
-    }
+    const r = await fetch(
+      `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&searchType=image&start=${start}&imgType=photo`
+    );
 
-    const data = await response.json();
+    const d = await r.json();
 
-    // تنسيق النتائج
-    const results = (data.items || []).map(item => ({
-      title: item.title || "",
-      link: item.link || "",             // رابط الصورة المباشر (Full Image)
-      displayLink: item.displayLink || "", 
-      snippet: item.snippet || "",
-      thumbnail: item.image?.thumbnailLink || "", // الصورة المصغرة للتحميل السريع
-      context: item.image?.contextLink || ""      
-    }));
-
-    res.status(200).json(results);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.json(
+      (d.items || []).map(i => ({ img: i.link }))
+    );
   }
+
+  res.status(405).end();
 }
