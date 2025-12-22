@@ -298,84 +298,37 @@ async function loadModel() {
 }
 loadModel();
 
-function imageSearch() {
-    document.getElementById("imageInput").click();
+async function imageSearch() {
+  document.getElementById("imageInput").click();
 }
 
-document.getElementById("imageInput").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
+document.getElementById("imageInput").addEventListener("change", async function () {
+  const file = this.files[0];
+  if (!file) return;
 
-    const container = document.getElementById("imgs");
-    const searchInput = document.getElementById("searchInput");
-    
-    // إظهار حالة التحميل
-    container.innerHTML = `
-        <div style="text-align:center; padding: 20px;">
-            <p>🔄 جاري تحليل الصورة...</p>
-            <div class="spinner"></div> 
-        </div>`;
+  const formData = new FormData();
+  formData.append("image", file);
 
-    const reader = new FileReader();
-    reader.onload = function (event) {
-        const imgElement = new Image();
-        imgElement.src = event.target.result;
+  document.getElementById("imgs").innerHTML = "جاري البحث بالصورة...";
 
-        imgElement.onload = async () => {
-            try {
-                // التأكد من تحميل الموديل
-                if (!classifier) classifier = await ml5.imageClassifier('MobileNet');
+  const res = await fetch("/api/images/visual", {
+    method: "POST",
+    body: formData
+  });
 
-                // طلب أفضل 3 نتائج للتحليل
-                const results = await classifier.classify(imgElement, 3);
+  const data = await res.json();
 
-                // معالجة النص: نأخذ الكلمة الأساسية فقط ونبتعد عن التفاصيل المعقدة
-                // مثال: "Egyptian cat, house cat" تصبح "Egyptian cat"
-                let mainLabel = results[0].label.split(',')[0];
-                let secondLabel = results[1].label.split(',')[0];
+  const container = document.getElementById("imgs");
+  container.innerHTML = "";
 
-                // إذا كانت نسبة التأكد ضعيفة (أقل من 40%)، ندمج نتيجتين لتحسين البحث
-                let finalQuery = mainLabel;
-                if (results[0].confidence < 0.4) {
-                    finalQuery = `${mainLabel} ${secondLabel}`;
-                }
-
-                // تحديث واجهة المستخدم بالنتائج
-                searchInput.value = finalQuery;
-                lastQuery = finalQuery;
-                currentStart = 1;
-
-                console.log("النتائج المقترحة:", results);
-                console.log("كلمة البحث النهائية:", finalQuery);
-
-                // تنفيذ البحث
-                await performSearch(true);
-
-            } catch (err) {
-                console.error("Analysis Error:", err);
-                container.innerHTML = "<p style='text-align:center; color:red;'>❌ فشل الذكاء الاصطناعي في التعرف على الصورة. حاول استخدام صورة أوضح.</p>";
-            }
-        };
-    };
-    reader.readAsDataURL(file);
+  data.forEach(i => {
+    const div = document.createElement("div");
+    div.className = "img-item";
+    div.innerHTML = `<img src="${i.img}">`;
+    div.onclick = () => openLightbox(i.img);
+    container.appendChild(div);
+  });
 });
-window.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const q = urlParams.get("q");
-  
-  if (q) {
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) searchInput.value = q;
-    
-    // استدعاء دالة البحث عن الصور لديك (تأكد من اسمها في صفحة images)
-    if (typeof startSearch === "function") {
-        startSearch(); 
-    } else if (typeof performSearch === "function") {
-        lastQuery = q;
-        performSearch(true);
-    }
-  }
-});  
 </script>
 
 </body>
