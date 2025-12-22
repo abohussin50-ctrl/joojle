@@ -148,6 +148,7 @@
       border-radius: 8px;
     }
   </style>
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 </head>
 <body>
 
@@ -290,14 +291,49 @@ function voiceSearch() {
     startSearch();
   };
 }
-
+// دالة لفتح نافذة اختيار ملف الصورة
 function imageSearch() {
   document.getElementById("imageInput").click();
 }
 
-document.getElementById("imageInput").addEventListener("change", function () {
-  const file = this.files[0];
-  if (file) alert("📷 تم اختيار: " + file.name);
+// الحدث الذي يعمل عند اختيار صورة
+document.getElementById("imageInput").addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const container = document.getElementById("imgs");
+  container.innerHTML = "<p style='text-align:center;'>🤖 ذكاء اصطناعي: جاري التعرف على محتوى الصورة...</p>";
+
+  // إنشاء عنصر صورة وهمي لتحليلها
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const imgElement = new Image();
+    imgElement.src = event.target.result;
+
+    imgElement.onload = async () => {
+      try {
+        // تشغيل موديل MobileNet للتعرف على الأشياء في الصورة
+        const classifier = await ml5.imageClassifier('MobileNet');
+        const results = await classifier.classify(imgElement);
+
+        // أخذ النتيجة الأولى (الأكثر دقة) وترجمتها أو تنظيفها
+        let foundObject = results[0].label.split(',')[0]; // مثال: "Golden Retriever"
+        
+        // وضع النتيجة في مربع البحث والبدء في جلب صور مشابهة
+        document.getElementById("searchInput").value = foundObject;
+        lastQuery = foundObject;
+        currentStart = 1;
+        
+        console.log("تم التعرف على:", foundObject);
+        await performSearch(true);
+        
+      } catch (err) {
+        console.error("خطأ في التحليل:", err);
+        alert("عذراً، فشل محرك الذكاء الاصطناعي في قراءة هذه الصورة.");
+      }
+    };
+  };
+  reader.readAsDataURL(file);
 });
 </script>
 
