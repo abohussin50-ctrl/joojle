@@ -291,49 +291,73 @@ function voiceSearch() {
     startSearch();
   };
 }
-// دالة لفتح نافذة اختيار ملف الصورة
+let classifier;
+async function loadModel() {
+    classifier = await ml5.imageClassifier('MobileNet');
+    console.log("Model Loaded!");
+}
+loadModel();
+
 function imageSearch() {
-  document.getElementById("imageInput").click();
+    document.getElementById("imageInput").click();
 }
 
-// الحدث الذي يعمل عند اختيار صورة
 document.getElementById("imageInput").addEventListener("change", function (e) {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const container = document.getElementById("imgs");
-  container.innerHTML = "<p style='text-align:center;'>🤖 ذكاء اصطناعي: جاري التعرف على محتوى الصورة...</p>";
+    const container = document.getElementById("imgs");
+    const searchInput = document.getElementById("searchInput");
+    
+    // إظهار حالة التحميل
+    container.innerHTML = `
+        <div style="text-align:center; padding: 20px;">
+            <p>🔄 جاري تحليل الصورة...</p>
+            <div class="spinner"></div> 
+        </div>`;
 
-  // إنشاء عنصر صورة وهمي لتحليلها
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const imgElement = new Image();
-    imgElement.src = event.target.result;
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const imgElement = new Image();
+        imgElement.src = event.target.result;
 
-    imgElement.onload = async () => {
-      try {
-        // تشغيل موديل MobileNet للتعرف على الأشياء في الصورة
-        const classifier = await ml5.imageClassifier('MobileNet');
-        const results = await classifier.classify(imgElement);
+        imgElement.onload = async () => {
+            try {
+                // التأكد من تحميل الموديل
+                if (!classifier) classifier = await ml5.imageClassifier('MobileNet');
 
-        // أخذ النتيجة الأولى (الأكثر دقة) وترجمتها أو تنظيفها
-        let foundObject = results[0].label.split(',')[0]; // مثال: "Golden Retriever"
-        
-        // وضع النتيجة في مربع البحث والبدء في جلب صور مشابهة
-        document.getElementById("searchInput").value = foundObject;
-        lastQuery = foundObject;
-        currentStart = 1;
-        
-        console.log("تم التعرف على:", foundObject);
-        await performSearch(true);
-        
-      } catch (err) {
-        console.error("خطأ في التحليل:", err);
-        alert("عذراً، فشل محرك الذكاء الاصطناعي في قراءة هذه الصورة.");
-      }
+                // طلب أفضل 3 نتائج للتحليل
+                const results = await classifier.classify(imgElement, 3);
+
+                // معالجة النص: نأخذ الكلمة الأساسية فقط ونبتعد عن التفاصيل المعقدة
+                // مثال: "Egyptian cat, house cat" تصبح "Egyptian cat"
+                let mainLabel = results[0].label.split(',')[0];
+                let secondLabel = results[1].label.split(',')[0];
+
+                // إذا كانت نسبة التأكد ضعيفة (أقل من 40%)، ندمج نتيجتين لتحسين البحث
+                let finalQuery = mainLabel;
+                if (results[0].confidence < 0.4) {
+                    finalQuery = `${mainLabel} ${secondLabel}`;
+                }
+
+                // تحديث واجهة المستخدم بالنتائج
+                searchInput.value = finalQuery;
+                lastQuery = finalQuery;
+                currentStart = 1;
+
+                console.log("النتائج المقترحة:", results);
+                console.log("كلمة البحث النهائية:", finalQuery);
+
+                // تنفيذ البحث
+                await performSearch(true);
+
+            } catch (err) {
+                console.error("Analysis Error:", err);
+                container.innerHTML = "<p style='text-align:center; color:red;'>❌ فشل الذكاء الاصطناعي في التعرف على الصورة. حاول استخدام صورة أوضح.</p>";
+            }
+        };
     };
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
 });
 </script>
 
