@@ -54,318 +54,353 @@
       outline: none;
       text-align: right;
     }
-#imgs {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 10px;
-  box-sizing: border-box;
-}
+    #imgs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
 
-#imgs a img {
-  width: 100%;
-  border-radius: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+    #imgs a img {
+      width: 100%;
+      border-radius: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-#imgs a img:hover {
-  transform: scale(1.04);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
+    #imgs a img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
 
-@media (max-width: 600px) {
-  #imgs {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
+    @media (max-width: 600px) {
+      #imgs {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
 
-  #imgs a img {
-    border-radius: 10px;
-  }
-}
-#results {
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 0 12px;
-  text-align: right;
-  box-sizing: border-box;
-}
+      #imgs a img {
+        border-radius: 10px;
+      }
+    }
+    #results {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 12px;
+      text-align: right;
+      box-sizing: border-box;
+    }
 
-.result {
-  padding: 16px 0;
-  border-bottom: 1px solid #eee;
-}
+    .result {
+      padding: 16px 0;
+      border-bottom: 1px solid #eee;
+    }
 
-.result a.title {
-  font-size: 20px;
-  color: #1a0dab;
-  text-decoration: none;
-  display: inline-block;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
+    .result a.title {
+      font-size: 20px;
+      color: #1a0dab;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
 
-.result a.title:hover {
-  text-decoration: underline;
-}
+    .result a.title:hover {
+      text-decoration: underline;
+    }
 
-.result .link {
-  font-size: 14px;
-  color: #006621;
-  margin-bottom: 6px;
-  display: block;
-  direction: ltr;
-  text-align: left;
-  overflow-wrap: anywhere;
-}
+    .result .link {
+      font-size: 14px;
+      color: #006621;
+      margin-bottom: 6px;
+      display: block;
+      direction: ltr;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
 
-.result .snippet {
-  font-size: 15px;
-  color: #4d5156;
-  line-height: 1.6;
-}
-.result-content {
-  display: flex;
-  gap: 15px;
-  align-items: flex-start;
-}
+    .result .snippet {
+      font-size: 15px;
+      color: #4d5156;
+      line-height: 1.6;
+    }
+    .result-content {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
 
-.result img {
-  width: 120px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-@media (max-width: 600px) {
-  .result {
-    padding: 14px 0;
-  }
+    .result img {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .result {
+        padding: 14px 0;
+      }
 
-  .result a.title {
-    font-size: 17px;
-  }
+      .result a.title {
+        font-size: 17px;
+      }
 
-  .result .snippet {
-    font-size: 14px;
-  }
+      .result .snippet {
+        font-size: 14px;
+      }
 
-  .result-content {
-    flex-direction: column;
-    gap: 8px;
-  }
+      .result-content {
+        flex-direction: column;
+        gap: 8px;
+      }
 
-  .result img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-  }
+      .result img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
 
-  .result .link {
-    font-size: 13px;
-  }
-}
+      .result .link {
+        font-size: 13px;
+      }
+    }
 
     .search-wrapper {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  padding: 8px 12px;
-  box-shadow: 0 1px 6px rgba(32,33,36,.28);
-  max-width: 600px;
-  margin: auto;
-}
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 8px 12px;
+      box-shadow: 0 1px 6px rgba(32,33,36,.28);
+      max-width: 600px;
+      margin: auto;
+    }
 
-.search-wrapper input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  padding: 10px;
-  direction: rtl;
-}
+    .search-wrapper input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      padding: 10px;
+      direction: rtl;
+    }
 
-.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
-  display: flex;
-  align-items: center;
-}
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+    }
 
-.icon-btn svg {
-  width: 22px;
-  height: 22px;
-  stroke: #5f6368;
-  fill: none;
-  stroke-width: 2;
-}
+    .icon-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: #5f6368;
+      fill: none;
+      stroke-width: 2;
+    }
 
-.icon-btn:hover svg {
-  stroke: #1a73e8;
-}
+    .icon-btn:hover svg {
+      stroke: #1a73e8;
+    }
+
+    /* تنسيق زر تحميل المزيد */
+    .load-more-btn {
+      display: none;
+      margin: 20px auto 40px;
+      padding: 10px 30px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .load-more-btn:hover {
+      background: #f8f9fa;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
 
   <header>
     <a href="index.html">الرئيسية</a>
-<div class="logo">
-  <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
-</div>
+    <div class="logo">
+      <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
+    </div>
   </header>
 
-<h1>نتائج البحث</h1>
+  <h1>نتائج البحث</h1>
 
-<div class="search-box">
-  <div class="search-wrapper">
-    
-    <!-- زر البحث -->
-    <button class="icon-btn" onclick="searchResults()" title="بحث">
-      <svg viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="7"></circle>
-        <line x1="16.65" y1="16.65" x2="22" y2="22"></line>
-      </svg>
-    </button>
+  <div class="search-box">
+    <div class="search-wrapper">
+      
+      <button class="icon-btn" onclick="startNewSearch()" title="بحث">
+        <svg viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="16.65" y1="16.65" x2="22" y2="22"></line>
+        </svg>
+      </button>
 
-    <!-- input -->
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="ابحث في الويب..."
-      onkeydown="if(event.key==='Enter')searchResults()"
-    />
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="ابحث في الويب..."
+        onkeydown="if(event.key==='Enter')startNewSearch()"
+      />
 
-    <!-- بحث صوتي -->
-    <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-        <path d="M19 11a7 7 0 0 1-14 0"/>
-        <line x1="12" y1="18" x2="12" y2="22"/>
-        <line x1="8" y1="22" x2="16" y2="22"/>
-      </svg>
-    </button>
+      <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
+          <path d="M19 11a7 7 0 0 1-14 0"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="8" y1="22" x2="16" y2="22"/>
+        </svg>
+      </button>
 
-    <!-- بحث بالصورة -->
-    <button class="icon-btn" onclick="imageSearch()" title="بحث بالصورة">
-      <svg viewBox="0 0 24 24">
-        <rect x="3" y="5" width="18" height="14" rx="2"/>
-        <circle cx="9" cy="10" r="2"/>
-        <path d="M21 15l-5-5L5 21"/>
-      </svg>
-    </button>
+      <button class="icon-btn" onclick="imageSearch()" title="بحث بالصورة">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <circle cx="9" cy="10" r="2"/>
+          <path d="M21 15l-5-5L5 21"/>
+        </svg>
+      </button>
 
-    <input type="file" id="imageInput" accept="image/*" hidden />
+      <input type="file" id="imageInput" accept="image/*" hidden />
 
-  </div>
-</div>
-
-<div id="results"></div>
-
-<script>
-const API_BASE = "https://joojle-one.vercel.app/api/search?q=";
-
-// قراءة الكلمة من URL
-function getQueryParam(param) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param) || "";
-}
-
-async function searchResults() {
-  const q = document.getElementById("searchInput").value.trim();
-  if (!q) return;
-
-  // تحديث URL بدون إعادة تحميل الصفحة
-  const newUrl = `${window.location.pathname}?q=${encodeURIComponent(q)}`;
-  window.history.replaceState(null, '', newUrl);
-
-  const container = document.getElementById("results");
-  container.innerHTML = '<p>جاري البحث...</p>';
-
-  try {
-    const res = await fetch(`${API_BASE}${encodeURIComponent(q)}`);
-    const data = await res.json();
-
-    container.innerHTML = '';
-
-    // التأكد من أن البيانات مصفوفة
-    let results = [];
-    if (Array.isArray(data)) {
-      results = data;
-    } else if (data.items && Array.isArray(data.items)) {
-      results = data.items;
-    }
-
-    if (results.length === 0) {
-      container.innerHTML = '<p>لا توجد نتائج.</p>';
-      return;
-    }
-
-results.forEach(item => {
-  const div = document.createElement('div');
-  div.className = 'result';
-
-  div.innerHTML = `
-    <a class="title" href="${item.link}" target="_blank">${item.title}</a>
-    <span class="link">${item.link}</span>
-
-    <div class="result-content">
-      <div>
-        <p class="snippet">${item.snippet || ''}</p>
-      </div>
-
-      ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
     </div>
-  `;
+  </div>
 
-  container.appendChild(div);
-});
+  <div id="results"></div>
+  <button id="loadMoreBtn" class="load-more-btn" onclick="loadMore()">تحميل المزيد</button>
 
-  } catch (err) {
-    container.innerHTML = `<p>حدث خطأ أثناء البحث: ${err.message}</p>`;
-  }
-}
+  <script>
+    const API_BASE = "https://joojle-one.vercel.app/api/search?q=";
+    let startIndex = 1; // نقطة البداية للنتائج
+    let currentQuery = "";
 
-// عند التحميل، ضع الكلمة في مربع البحث وشغّل البحث تلقائيًا
-window.addEventListener("DOMContentLoaded", () => {
-  const q = getQueryParam("q");
-  if (q) {
-    document.getElementById("searchInput").value = q;
-    searchResults();
-  }
-});
-  	function voiceSearch() {
-  if (!('webkitSpeechRecognition' in window)) {
-    alert("البحث الصوتي غير مدعوم في هذا المتصفح");
-    return;
-  }
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param) || "";
+    }
 
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "ar-SA";
-  recognition.start();
+    // دالة لبدء بحث جديد
+    function startNewSearch() {
+      startIndex = 1;
+      const container = document.getElementById("results");
+      container.innerHTML = '<p>جاري البحث...</p>';
+      document.getElementById("loadMoreBtn").style.display = "none";
+      searchResults();
+    }
 
-  recognition.onresult = function (event) {
-    const text = event.results[0][0].transcript;
-    document.getElementById("searchInput").value = text;
-    searchResults();
-  };
-}
-function imageSearch() {
-  document.getElementById("imageInput").click();
-}
+    // دالة جلب المزيد من النتائج
+    function loadMore() {
+      startIndex += 10;
+      const btn = document.getElementById("loadMoreBtn");
+      btn.innerText = "جاري التحميل...";
+      searchResults(true);
+    }
 
-document.getElementById("imageInput").addEventListener("change", function () {
-  const file = this.files[0];
-  if (!file) return;
+    async function searchResults(append = false) {
+      const q = document.getElementById("searchInput").value.trim();
+      if (!q) return;
 
-  alert("📷 تم اختيار صورة: " + file.name + "\n(يمكن ربطها ببحث ذكي لاحقًا)");
-});
-</script>
+      currentQuery = q;
 
+      // تحديث URL بدون إعادة تحميل الصفحة (فقط عند البحث الجديد)
+      if (!append) {
+        const newUrl = `${window.location.pathname}?q=${encodeURIComponent(q)}`;
+        window.history.replaceState(null, '', newUrl);
+      }
+
+      const container = document.getElementById("results");
+      const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+      try {
+        // نرسل معامل start للـ API (يجب أن يكون الـ API يدعم ذلك)
+        const res = await fetch(`${API_BASE}${encodeURIComponent(q)}&start=${startIndex}`);
+        const data = await res.json();
+
+        if (!append) container.innerHTML = '';
+
+        let results = [];
+        if (Array.isArray(data)) {
+          results = data;
+        } else if (data.items && Array.isArray(data.items)) {
+          results = data.items;
+        }
+
+        if (results.length === 0) {
+          if (!append) container.innerHTML = '<p>لا توجد نتائج.</p>';
+          loadMoreBtn.style.display = "none";
+          return;
+        }
+
+        results.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'result';
+          div.innerHTML = `
+            <a class="title" href="${item.link}" target="_blank">${item.title}</a>
+            <span class="link">${item.link}</span>
+            <div class="result-content">
+              <div>
+                <p class="snippet">${item.snippet || ''}</p>
+              </div>
+              ${item.image ? `<img src="${item.image}" alt="${item.title}">` : ""}
+            </div>
+          `;
+          container.appendChild(div);
+        });
+
+        // إظهار زر تحميل المزيد إذا وجدت نتائج
+        loadMoreBtn.style.display = "block";
+        loadMoreBtn.innerText = "تحميل المزيد";
+
+      } catch (err) {
+        container.innerHTML += `<p>حدث خطأ أثناء البحث: ${err.message}</p>`;
+        loadMoreBtn.style.display = "none";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const q = getQueryParam("q");
+      if (q) {
+        document.getElementById("searchInput").value = q;
+        searchResults();
+      }
+    });
+
+    function voiceSearch() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("البحث الصوتي غير مدعوم في هذا المتصفح");
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "ar-SA";
+      recognition.start();
+      recognition.onresult = function (event) {
+        const text = event.results[0][0].transcript;
+        document.getElementById("searchInput").value = text;
+        startNewSearch();
+      };
+    }
+
+    function imageSearch() {
+      document.getElementById("imageInput").click();
+    }
+
+    document.getElementById("imageInput").addEventListener("change", function () {
+      const file = this.files[0];
+      if (!file) return;
+      alert("📷 تم اختيار صورة: " + file.name + "\n(يمكن ربطها ببحث ذكي لاحقًا)");
+    });
+  </script>
 </body>
 </html>
