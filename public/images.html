@@ -205,52 +205,67 @@
 
 <script>
 let lastQuery = "";
+let currentStart = 1; // مؤشر بداية البحث للـ Pagination
 
 async function startSearch(){
   const q = document.getElementById("searchInput").value.trim();
   if(!q) return;
   
   lastQuery = q;
+  currentStart = 1; // إعادة تعيين لقمة البحث الجديد
   document.getElementById("imgs").innerHTML = "<p style='text-align:center;'>جاري البحث...</p>";
   document.getElementById("loadMoreBtn").style.display = "none";
   
-  await performSearch();
+  await performSearch(true);
 }
 
-async function performSearch(){
+async function loadMore(){
+  currentStart += 10; // زيادة المؤشر بمقدار 10 لجلب الصفحة التالية
+  document.getElementById("loadMoreBtn").innerText = "جاري التحميل...";
+  await performSearch(false);
+}
+
+async function performSearch(isNewSearch){
   try {
-    // الاتصال بـ API الذي عدلناه (search.js)
-    const res = await fetch(`/api/images/search?q=${encodeURIComponent(lastQuery)}`);
+    // إرسال q و start للتحكم في الصفحات
+    const res = await fetch(`/api/images/search?q=${encodeURIComponent(lastQuery)}&start=${currentStart}`);
     
     if (!res.ok) throw new Error("فشل في جلب النتائج");
     
     const data = await res.json();
-    displayResults(data);
+    displayResults(data, isNewSearch);
   } catch (err) {
-    document.getElementById("imgs").innerHTML = `<p style='text-align:center; color:red;'>خطأ: ${err.message}</p>`;
+    if(isNewSearch) {
+        document.getElementById("imgs").innerHTML = `<p style='text-align:center; color:red;'>خطأ: ${err.message}</p>`;
+    } else {
+        alert("خطأ أثناء تحميل المزيد: " + err.message);
+    }
   }
 }
 
-function displayResults(items) {
+function displayResults(items, isNewSearch) {
   const container = document.getElementById("imgs");
-  container.innerHTML = ""; // مسح القديم للبحث الجديد
+  const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+  if (isNewSearch) container.innerHTML = ""; 
 
   if (items.length === 0) {
-    container.innerHTML = "<p style='text-align:center;'>لم يتم العثور على صور.</p>";
+    if(isNewSearch) container.innerHTML = "<p style='text-align:center;'>لم يتم العثور على صور.</p>";
+    loadMoreBtn.style.display = "none";
     return;
   }
 
   items.forEach(item => {
     const div = document.createElement("div");
     div.className = "img-item";
-    // استخدام link لأنه يحتوي على رابط الصورة المباشر في كود الـ API الجديد
-    div.innerHTML = `<img src="${item.link}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/200?text=Error'">`;
+    div.innerHTML = `<img src="${item.link}" alt="${item.title}" loading="lazy" onerror="this.parentElement.style.display='none'">`;
     div.onclick = () => openLightbox(item.link);
     container.appendChild(div);
   });
   
-  // إظهار زر "تحميل المزيد" إذا كان هناك نتائج (اختياري حسب الـ API)
-  // في Custom Search API البسيط، نحتاج لتعديل الـ Start index للـ Load More
+  // تحديث حالة زر تحميل المزيد
+  loadMoreBtn.style.display = "block";
+  loadMoreBtn.innerText = "تحميل المزيد";
 }
 
 function openLightbox(src){
