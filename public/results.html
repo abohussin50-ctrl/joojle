@@ -378,28 +378,40 @@
       }
     }
 
-    function renderPagination() {
+function renderPagination() {
       const logoDiv = document.getElementById("pagination-logo");
       const list = document.getElementById("page-numbers-list");
       const prevWrap = document.getElementById("prev-btn-placeholder");
       const nextWrap = document.getElementById("next-btn-placeholder");
 
-      // إنشاء شعار Joooooooole الملون (10 حروف o)
-      let logoHTML = '<span class="blue">J</span>';
+      // إنشاء شعار joooooooooojle الملون
+      // j (أزرق)
+      let logoHTML = '<span class="blue">j</span>'; 
+      
+      // توليد 10 حروف o
       for(let i=0; i<10; i++) {
-        logoHTML += (i % 2 === 0) ? '<span class="red">o</span>' : '<span class="yellow">o</span>';
+        if (i === 0) {
+          // أول حرف o (أحمر)
+          logoHTML += '<span class="red">o</span>';
+        } else {
+          // بقية الحروف o (أصفر)
+          logoHTML += '<span class="yellow">o</span>';
+        }
       }
-      logoHTML += '<span class="green">l</span><span class="red">e</span>';
+      
+      // إضافة j (أزرق) - l (أخضر) - e (أحمر)
+      logoHTML += '<span class="blue">j</span><span class="green">l</span><span class="red">e</span>';
+      
       logoDiv.innerHTML = logoHTML;
 
-      // زر السابقة
+      // زر السابقة (يظهر فقط إذا لم تكن في الصفحة الأولى)
       prevWrap.innerHTML = currentPage > 1 ? `
         <li class="nav-btn prev-btn" onclick="goToPage(${currentPage - 1})">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
           السابقة
         </li>` : '';
 
-      // أرقام الصفحات (10 صفحات)
+      // توليد أرقام الصفحات من 1 إلى 10
       list.innerHTML = '';
       for(let i=1; i<=10; i++) {
         const li = document.createElement('li');
@@ -409,14 +421,13 @@
         list.appendChild(li);
       }
 
-      // زر التالية
+      // زر التالية (يظهر حتى الصفحة التاسعة)
       nextWrap.innerHTML = currentPage < 10 ? `
         <li class="nav-btn next-btn" onclick="goToPage(${currentPage + 1})">
           التالية
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
         </li>` : '';
     }
-
     function goToPage(p) {
       currentPage = p;
       performSearch();
