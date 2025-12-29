@@ -87,6 +87,13 @@
       padding: 0 15px;
     }
 
+    /* كود إضافي لجعل الصور ملء الصفحة */
+    #results.image-mode {
+      max-width: 100% !important;
+      margin-right: 0 !important;
+      padding: 10px;
+    }
+
     .result { margin-bottom: 32px; }
 
     .result-header {
@@ -195,8 +202,34 @@
     .prev-btn svg { transform: rotate(180deg); }
     /* --- نهاية تنسيق الترقيم --- */
 
-    .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    .img-card img { width: 100%; border-radius: 8px; object-fit: cover; height: 120px; }
+    /* تعديل شبكة الصور لتناسب كامل الصفحة */
+    .image-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+      gap: 10px; 
+    }
+    .img-card { 
+      border: 1px solid #efefef; 
+      border-radius: 8px; 
+      overflow: hidden; 
+      background: #fff;
+    }
+    .img-card img { width: 100%; border-radius: 0; object-fit: cover; height: 180px; }
+    .img-card .img-title { 
+      padding: 8px; 
+      font-size: 12px; 
+      color: #3c4043; 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+    }
+
+    #loading-more {
+      text-align: center;
+      padding: 20px;
+      display: none;
+      color: var(--google-grey);
+    }
 
     @media (max-width: 800px) {
       .top-bar { flex-direction: column; padding: 10px; gap: 10px; }
@@ -205,6 +238,7 @@
       #results { margin-right: 0; margin: auto; }
       .video-item { flex-direction: column; }
       .video-thumb-container { width: 100%; height: 180px; }
+      .image-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     }
   </style>
 </head>
@@ -250,6 +284,7 @@
   </header>
 
   <div id="results"></div>
+  <div id="loading-more">جاري تحميل المزيد من الصور...</div>
 
   <div id="pagination-container" class="pagination" style="display: none;">
     <div class="pagination-logo" id="pagination-logo"></div>
@@ -264,6 +299,7 @@
     const API_BASE = "https://joojle-one.vercel.app/api/search?q=";
     let currentType = 'all';
     let currentPage = 1;
+    let isFetching = false; // لمنع الطلبات المتكررة عند التمرير
     const resultsPerPage = 10;
 
     function changeTab(type) {
@@ -291,43 +327,65 @@
     }
 
     async function performSearch() {
+      if (isFetching) return;
       const q = document.getElementById("searchInput").value.trim();
       if (!q) return;
 
       const container = document.getElementById("results");
       const paginationBox = document.getElementById("pagination-container");
       
-      container.innerHTML = `<p style="color:#70757a; padding: 20px;">جاري تحميل صفحة ${currentPage}...</p>`;
-      paginationBox.style.display = "none";
-      window.scrollTo(0, 0);
+      // تهيئة البحث لنتائج الصور (كامل الصفحة) أو العادية
+      if (currentType === 'image') {
+          container.classList.add('image-mode');
+          paginationBox.style.display = "none";
+      } else {
+          container.classList.remove('image-mode');
+      }
 
-      // حساب معامل start لمنع تكرار النتائج
+      if (currentPage === 1) {
+          container.innerHTML = `<p style="color:#70757a; padding: 20px;">جاري تحميل صفحة ${currentPage}...</p>`;
+          window.scrollTo(0, 0);
+      }
+
       const start = (currentPage - 1) * resultsPerPage;
+      isFetching = true;
 
       try {
         const res = await fetch(`${API_BASE}${encodeURIComponent(q)}&type=${currentType}&start=${start}`);
         const data = await res.json();
-        container.innerHTML = '';
+        
+        if (currentPage === 1) container.innerHTML = '';
         const items = Array.isArray(data) ? data : (data.items || []);
 
         if (items.length === 0) {
-          container.innerHTML = '<p style="padding: 20px;">لم يتم العثور على نتائج إضافية.</p>';
+          if (currentPage === 1) container.innerHTML = '<p style="padding: 20px;">لم يتم العثور على نتائج.</p>';
+          isFetching = false;
           return;
         }
 
         if (currentType === 'image') {
-          const grid = document.createElement('div');
-          grid.className = 'image-grid';
+          let grid = container.querySelector('.image-grid');
+          if (!grid) {
+            grid = document.createElement('div');
+            grid.className = 'image-grid';
+            container.appendChild(grid);
+          }
+
           items.forEach(item => {
+            const domain = getDomainInfo(item.link);
             grid.innerHTML += `
               <div class="img-card">
                 <a href="${item.link}" target="_blank">
                   <img src="${item.image || item.link}" onerror="this.src='https://via.placeholder.com/150'">
-                  <div style="font-size:11px; margin-top:5px; color:#70757a">${item.title.substring(0,25)}</div>
+                  <div class="img-title">
+                     <img src="${domain.favicon}" style="width:12px; height:12px; margin-left:4px;">
+                     ${item.title}
+                  </div>
                 </a>
               </div>`;
           });
-          container.appendChild(grid);
+          // إخفاء الترقيم في وضع الصور لاعتماد التمرير اللانهائي
+          paginationBox.style.display = "none";
         } else {
           items.forEach(item => {
             const info = getDomainInfo(item.link);
@@ -367,51 +425,50 @@
             div.innerHTML = contentHTML;
             container.appendChild(div);
           });
+          
+          renderPagination();
+          paginationBox.style.display = "flex";
         }
 
-        // تحديث واجهة الترقيم
-        renderPagination();
-        paginationBox.style.display = "flex";
-
       } catch (err) {
-        container.innerHTML = '<p style="padding: 20px;">حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.</p>';
+        if (currentPage === 1) container.innerHTML = '<p style="padding: 20px;">حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.</p>';
+      } finally {
+        isFetching = false;
+        document.getElementById('loading-more').style.display = "none";
       }
     }
 
-function renderPagination() {
+    // منطق التمرير اللانهائي للصور فقط
+    window.onscroll = function() {
+      if (currentType !== 'image') return;
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+        if (!isFetching) {
+          currentPage++;
+          document.getElementById('loading-more').style.display = "block";
+          performSearch();
+        }
+      }
+    };
+
+    function renderPagination() {
       const logoDiv = document.getElementById("pagination-logo");
       const list = document.getElementById("page-numbers-list");
       const prevWrap = document.getElementById("prev-btn-placeholder");
       const nextWrap = document.getElementById("next-btn-placeholder");
 
-      // إنشاء شعار joooooooooojle الملون
-      // j (أزرق)
       let logoHTML = '<span class="blue">j</span>'; 
-      
-      // توليد 10 حروف o
       for(let i=0; i<10; i++) {
-        if (i === 0) {
-          // أول حرف o (أحمر)
-          logoHTML += '<span class="red">o</span>';
-        } else {
-          // بقية الحروف o (أصفر)
-          logoHTML += '<span class="yellow">o</span>';
-        }
+        logoHTML += (i === 0) ? '<span class="red">o</span>' : '<span class="yellow">o</span>';
       }
-      
-      // إضافة j (أزرق) - l (أخضر) - e (أحمر)
       logoHTML += '<span class="blue">j</span><span class="green">l</span><span class="red">e</span>';
-      
       logoDiv.innerHTML = logoHTML;
 
-      // زر السابقة (يظهر فقط إذا لم تكن في الصفحة الأولى)
       prevWrap.innerHTML = currentPage > 1 ? `
         <li class="nav-btn prev-btn" onclick="goToPage(${currentPage - 1})">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
           السابقة
         </li>` : '';
 
-      // توليد أرقام الصفحات من 1 إلى 10
       list.innerHTML = '';
       for(let i=1; i<=10; i++) {
         const li = document.createElement('li');
@@ -421,13 +478,13 @@ function renderPagination() {
         list.appendChild(li);
       }
 
-      // زر التالية (يظهر حتى الصفحة التاسعة)
       nextWrap.innerHTML = currentPage < 10 ? `
         <li class="nav-btn next-btn" onclick="goToPage(${currentPage + 1})">
           التالية
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
         </li>` : '';
     }
+
     function goToPage(p) {
       currentPage = p;
       performSearch();
