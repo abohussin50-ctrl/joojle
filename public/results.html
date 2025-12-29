@@ -121,10 +121,86 @@
     .result .snippet { font-size: 14px; color: #4d5156; line-height: 1.58; word-wrap: break-word; }
 
     /* تنسيق الفيديوهات */
-    .video-item { display: flex; gap: 15px; margin-top: 8px; }
-    .video-thumb { position: relative; width: 140px; height: 80px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #eee; }
-    .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.video-result-container {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    align-items: flex-start;
+}
+
+.video-preview {
+    position: relative;
+    width: 160px; /* عرض ثابت للصورة المصغرة */
+    height: 90px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #000;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.video-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+/* أيقونة التشغيل في المنتصف */
+.play-button-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+}
+
+.play-button-overlay svg {
+    fill: #fff;
+    width: 16px;
+    height: 16px;
+    margin-left: -2px; /* لتوسيط المثلث بصرياً */
+}
+
+/* مدة الفيديو في الزاوية */
+.video-duration {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    direction: ltr;
+}
+
+.video-snippet {
+    font-size: 14px;
+    color: #4d5156;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* عرض 3 أسطر فقط من الوصف */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 480px) {
+    .video-result-container {
+        flex-direction: column;
+    }
+    .video-preview {
+        width: 100%;
+        height: 180px;
+    }
+}
 
     /* تنسيق الصور */
     .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
@@ -274,7 +350,36 @@
         container.innerHTML = '<p>حدث خطأ أثناء تحميل النتائج.</p>';
       }
     }
+// داخل حلقة التكرار items.forEach
+const info = getDomainInfo(item.link);
+const videoDiv = document.createElement('div');
+videoDiv.className = 'result';
 
+videoDiv.innerHTML = `
+    <div class="result-header">
+        <div class="site-icon"><img src="${info.favicon}" alt=""></div>
+        <div class="site-info">
+            <span class="site-name">${info.name}</span>
+            <span class="site-url">${info.domain}</span>
+        </div>
+    </div>
+    
+    <a class="title" href="${item.link}" target="_blank">${item.title}</a>
+    
+    <div class="video-result-container">
+        <div class="video-preview">
+            <img src="${item.image || 'https://via.placeholder.com/160x90?text=Video'}" onerror="this.src='https://via.placeholder.com/160x90'">
+            <div class="play-button-overlay">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            ${item.duration ? `<span class="video-duration">${item.duration}</span>` : ''}
+        </div>
+        <div class="video-snippet">
+            ${item.snippet || 'لا يوجد وصف متاح لهذا الفيديو...'}
+        </div>
+    </div>
+`;
+container.appendChild(videoDiv);
     function imageSearch() { document.getElementById("imageInput").click(); }
     document.getElementById("imageInput").onchange = function() {
       if(this.files[0]) alert("جاري معالجة الصورة: " + this.files[0].name);
