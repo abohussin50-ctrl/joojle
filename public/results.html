@@ -89,7 +89,6 @@
 
     .result { margin-bottom: 32px; }
 
-    /* الهيدر: أيقونة ودومين */
     .result-header {
       display: flex;
       align-items: center;
@@ -118,7 +117,7 @@
     .result a.title:hover { text-decoration: underline; }
     .result .snippet { font-size: 14px; color: #4d5156; line-height: 1.58; word-wrap: break-word; }
 
-    /* --- تنسيق الفيديوهات الجديد --- */
+    /* تنسيق الفيديوهات */
     .video-item {
       display: flex;
       gap: 16px;
@@ -149,7 +148,52 @@
       direction: ltr;
     }
     .video-info-side { flex: 1; }
-    /* --- نهاية تنسيق الفيديوهات --- */
+
+    /* --- تنسيق الترقيم الجديد --- */
+    .pagination {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 40px 0 60px;
+      font-family: Arial, sans-serif;
+    }
+    .pagination-logo {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      direction: ltr;
+    }
+    .pagination-numbers-wrap {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      list-style: none;
+      padding: 0;
+    }
+    .pagination-numbers-wrap li {
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--active-blue);
+    }
+    .pagination-numbers-wrap li.active {
+      color: #000;
+      font-weight: bold;
+      cursor: default;
+    }
+    .pagination-numbers-wrap li:hover:not(.active) {
+      text-decoration: underline;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: var(--active-blue);
+      cursor: pointer;
+    }
+    .prev-btn svg { transform: rotate(180deg); }
+    /* --- نهاية تنسيق الترقيم --- */
 
     .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .img-card img { width: 100%; border-radius: 8px; object-fit: cover; height: 120px; }
@@ -174,10 +218,10 @@
 
       <div class="search-box">
         <div class="search-wrapper">
-          <button class="icon-btn" onclick="performSearch()" title="بحث">
+          <button class="icon-btn" onclick="currentPage=1; performSearch()" title="بحث">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="22" y2="22"></line></svg>
           </button>
-          <input id="searchInput" type="text" placeholder="ابحث في الويب..." onkeydown="if(event.key==='Enter')performSearch()"/>
+          <input id="searchInput" type="text" placeholder="ابحث في الويب..." onkeydown="if(event.key==='Enter'){currentPage=1; performSearch();}"/>
           <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
             <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
           </button>
@@ -207,12 +251,24 @@
 
   <div id="results"></div>
 
+  <div id="pagination-container" class="pagination" style="display: none;">
+    <div class="pagination-logo" id="pagination-logo"></div>
+    <ul class="pagination-numbers-wrap">
+      <div id="prev-btn-placeholder"></div>
+      <div id="page-numbers-list" style="display: flex; gap: 12px;"></div>
+      <div id="next-btn-placeholder"></div>
+    </ul>
+  </div>
+
   <script>
     const API_BASE = "https://joojle-one.vercel.app/api/search?q=";
     let currentType = 'all';
+    let currentPage = 1;
+    const resultsPerPage = 10;
 
     function changeTab(type) {
       currentType = type;
+      currentPage = 1;
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.getElementById(`tab-${type}`).classList.add('active');
       performSearch();
@@ -239,16 +295,23 @@
       if (!q) return;
 
       const container = document.getElementById("results");
-      container.innerHTML = '<p style="color:#70757a; padding: 20px;">جاري البحث عن نتائج...</p>';
+      const paginationBox = document.getElementById("pagination-container");
+      
+      container.innerHTML = `<p style="color:#70757a; padding: 20px;">جاري تحميل صفحة ${currentPage}...</p>`;
+      paginationBox.style.display = "none";
+      window.scrollTo(0, 0);
+
+      // حساب معامل start لمنع تكرار النتائج
+      const start = (currentPage - 1) * resultsPerPage;
 
       try {
-        const res = await fetch(`${API_BASE}${encodeURIComponent(q)}&type=${currentType}`);
+        const res = await fetch(`${API_BASE}${encodeURIComponent(q)}&type=${currentType}&start=${start}`);
         const data = await res.json();
         container.innerHTML = '';
         const items = Array.isArray(data) ? data : (data.items || []);
 
         if (items.length === 0) {
-          container.innerHTML = '<p style="padding: 20px;">لم يتم العثور على نتائج.</p>';
+          container.innerHTML = '<p style="padding: 20px;">لم يتم العثور على نتائج إضافية.</p>';
           return;
         }
 
@@ -271,7 +334,6 @@
             const div = document.createElement('div');
             div.className = 'result';
             
-            // تصميم النتيجة العامة مع تخصيص الفيديو
             let contentHTML = `
               <div class="result-header">
                 <div class="site-icon"><img src="${info.favicon}" alt=""></div>
@@ -306,9 +368,58 @@
             container.appendChild(div);
           });
         }
+
+        // تحديث واجهة الترقيم
+        renderPagination();
+        paginationBox.style.display = "flex";
+
       } catch (err) {
         container.innerHTML = '<p style="padding: 20px;">حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.</p>';
       }
+    }
+
+    function renderPagination() {
+      const logoDiv = document.getElementById("pagination-logo");
+      const list = document.getElementById("page-numbers-list");
+      const prevWrap = document.getElementById("prev-btn-placeholder");
+      const nextWrap = document.getElementById("next-btn-placeholder");
+
+      // إنشاء شعار Joooooooole الملون (10 حروف o)
+      let logoHTML = '<span class="blue">J</span>';
+      for(let i=0; i<10; i++) {
+        logoHTML += (i % 2 === 0) ? '<span class="red">o</span>' : '<span class="yellow">o</span>';
+      }
+      logoHTML += '<span class="green">l</span><span class="red">e</span>';
+      logoDiv.innerHTML = logoHTML;
+
+      // زر السابقة
+      prevWrap.innerHTML = currentPage > 1 ? `
+        <li class="nav-btn prev-btn" onclick="goToPage(${currentPage - 1})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          السابقة
+        </li>` : '';
+
+      // أرقام الصفحات (10 صفحات)
+      list.innerHTML = '';
+      for(let i=1; i<=10; i++) {
+        const li = document.createElement('li');
+        li.innerText = i;
+        if(i === currentPage) li.className = 'active';
+        li.onclick = () => goToPage(i);
+        list.appendChild(li);
+      }
+
+      // زر التالية
+      nextWrap.innerHTML = currentPage < 10 ? `
+        <li class="nav-btn next-btn" onclick="goToPage(${currentPage + 1})">
+          التالية
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </li>` : '';
+    }
+
+    function goToPage(p) {
+      currentPage = p;
+      performSearch();
     }
 
     function imageSearch() { document.getElementById("imageInput").click(); }
@@ -322,6 +433,7 @@
       rec.lang = "ar-SA";
       rec.onresult = (e) => {
         document.getElementById("searchInput").value = e.results[0][0].transcript;
+        currentPage = 1;
         performSearch();
       };
       rec.start();
