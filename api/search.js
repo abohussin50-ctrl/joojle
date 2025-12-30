@@ -1,4 +1,3 @@
-// /api/search.js
 import fetch from "node-fetch"; 
 
 export default async function handler(req, res) {
@@ -41,34 +40,41 @@ export default async function handler(req, res) {
     try {
       const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${currentKey}&cx=${CX}&q=${encodeURIComponent(q)}&num=10&start=${start}`;
       const response = await fetch(apiUrl);
-
-      if (response.status === 429) {
-        console.warn(`Key ${i + 1} exhausted. Trying next key...`);
-        continue;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return res.status(response.status).json({ error: errorData.error?.message || "Google API Error" });
-      }
-
       const data = await response.json();
+
+      // فحص إذا كان هناك خطأ في الاستجابة
+      if (!response.ok) {
+        const errorMessage = data.error?.message || "";
+        
+        // إذا كان الخطأ بسبب نفاد الحصة (سواء كان الكود 429 أو 403)
+        if (response.status === 429 || errorMessage.toLowerCase().includes("quota")) {
+          console.warn(`Key ${i + 1} exhausted (Quota exceeded). Trying next key...`);
+          continue; // الانتقال للمفتاح التالي في الحلقة (Loop)
+        }
+
+        // إذا كان خطأ آخر غير الحصة، أرجعه للمستخدم
+        return res.status(response.status).json({ error: errorMessage || "Google API Error" });
+      }
+
+      // إذا كانت الاستجابة ناجحة، قم بمعالجة البيانات وإرسالها
       const results = (data.items || []).map(item => ({
         title: item.title || "",
         link: item.link || "",
         snippet: item.snippet || "",
+        displayLink: item.displayLink || "",
         image: item.pagemap?.cse_image?.[0]?.src || item.pagemap?.metatags?.[0]?.["og:image"] || null 
       }));
 
       return res.status(200).json(results);
 
     } catch (err) {
+      console.error(`Error with Key ${i + 1}:`, err.message);
       if (i === API_KEYS.length - 1) {
-        return res.status(500).json({ error: "All API keys failed or connection error: " + err.message });
+        return res.status(500).json({ error: "All API keys failed or connection error." });
       }
       continue;
     }
   }
 
-  return res.status(429).json({ error: "Daily limit reached for all 10 API keys. Please try again tomorrow." });
+  return res.status(429).json({ error: "Daily limit reached for all API keys. Please try again tomorrow." });
 }
