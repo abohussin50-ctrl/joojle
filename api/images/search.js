@@ -1,30 +1,40 @@
-// /api/search.js
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {
-  // دعم GET فقط
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const q = req.query.q;
-  // استلام معامل start من الرابط، وإذا لم يوجد نفترض أنه 1 (البداية)
   const start = req.query.start || 1;
 
   if (!q || q.trim() === "") {
     return res.status(400).json({ error: "Query parameter 'q' is required" });
   }
 
-  const API_KEY = process.env.GOOGLE_API_KEY;
+  const apiKeys = [
+    process.env.GOOGLE_API_KEY_1,
+    process.env.GOOGLE_API_KEY_2,
+    process.env.GOOGLE_API_KEY_3,
+    process.env.GOOGLE_API_KEY_4,
+    process.env.GOOGLE_API_KEY_5,
+    process.env.GOOGLE_API_KEY_6,
+    process.env.GOOGLE_API_KEY_7,
+    process.env.GOOGLE_API_KEY_8,
+    process.env.GOOGLE_API_KEY_9,
+    process.env.GOOGLE_API_KEY_10
+  ].filter(key => key);  
+
   const CX = process.env.GOOGLE_CX;
 
-  if (!API_KEY || !CX) {
-    return res.status(500).json({ error: "Google API key or CX is missing" });
+  if (apiKeys.length === 0 || !CX) {
+    return res.status(500).json({ error: "Missing API keys or CX configuration" });
   }
 
+  const randomKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
+
   try {
-    // تم إضافة &start=${start} لتمكين نظام الصفحات (تحميل المزيد)
-    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=10&start=${start}`;
+    const apiUrl = `https://www.googleapis.com/customsearch/v1?key=${randomKey}&cx=${CX}&q=${encodeURIComponent(q)}&searchType=image&num=10&start=${start}`;
 
     const response = await fetch(apiUrl);
 
@@ -35,14 +45,13 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // تنسيق النتائج
     const results = (data.items || []).map(item => ({
       title: item.title || "",
-      link: item.link || "",             // رابط الصورة المباشر (Full Image)
+      link: item.link || "",          
       displayLink: item.displayLink || "", 
       snippet: item.snippet || "",
-      thumbnail: item.image?.thumbnailLink || "", // الصورة المصغرة للتحميل السريع
-      context: item.image?.contextLink || ""      
+      thumbnail: item.image?.thumbnailLink || "", 
+      context: item.image?.contextLink || ""    
     }));
 
     res.status(200).json(results);
