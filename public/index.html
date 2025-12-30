@@ -416,10 +416,11 @@ function goToResults(query = null) {
     const q = query || document.getElementById("searchInput").value.trim();
     if (!q) return;
 
-    // أضفنا &type=${currentSearchMode} لكي تعرف صفحة النتائج ماذا اختار المستخدم
     if (currentSearchMode === 'images') {
+        // إذا كان المود "صور" يذهب لصفحة الصور ويمرر النوع "image"
         window.location.href = `images.html?q=${encodeURIComponent(q)}&type=image`;
     } else {
+        // إذا كان المود "الكل" يذهب لصفحة النتائج العامة ويمرر النوع "all"
         window.location.href = `results.html?q=${encodeURIComponent(q)}&type=all`;
     }
 }
@@ -445,37 +446,16 @@ function voiceSearch() {
         alert("المتصفح لا يدعم البحث الصوتي");
         return;
     }
-    
     const recognition = new webkitSpeechRecognition();
     recognition.lang = "ar-SA";
-    
-    // تغيير نص التلميح لإعلام المستخدم أن المتصفح يستمع
-    const searchInput = document.getElementById("searchInput");
-    const originalPlaceholder = searchInput.placeholder;
-    searchInput.placeholder = "جاري الاستماع... تحدث الآن";
-    
     recognition.start();
 
     recognition.onresult = function (event) {
         const text = event.results[0][0].transcript;
-        searchInput.value = text;
+        document.getElementById("searchInput").value = text;
         
-        // التحقق من الوضع الحالي وتوجيه المستخدم للرابط الصحيح مع نوع البحث
-        if (currentSearchMode === 'images') {
-            window.location.href = `images.html?q=${encodeURIComponent(text)}&type=image`;
-        } else {
-            // يمكنك توجيهه لـ results.html أو images.html حسب بنية موقعك
-            window.location.href = `images.html?q=${encodeURIComponent(text)}&type=all`;
-        }
-    };
-
-    recognition.onend = function() {
-        searchInput.placeholder = originalPlaceholder;
-    };
-
-    recognition.onerror = function() {
-        alert("عذراً، لم نتمكن من التعرف على الصوت.");
-        searchInput.placeholder = originalPlaceholder;
+        // استخدام الدالة الموحدة لضمان الذهاب للصفحة الصحيحة
+        goToResults(text);
     };
 }
 // --- البحث بالصور ---
