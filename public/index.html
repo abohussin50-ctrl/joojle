@@ -10,8 +10,81 @@
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <style>
     body { background:#fff; font-family:Arial, sans-serif; margin:0; padding:0; direction:rtl; text-align:center; }
-    header { display:flex; justify-content:flex-end; padding:15px 30px; font-size:14px; }
-    header a { margin-left:20px; text-decoration:none; color:#000; }
+header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 15px;
+  position: relative;
+  direction: rtl;
+}
+
+header a {
+  text-decoration: none;
+  color: #202124;
+  font-size: 14px;
+}
+
+.apps-container { position: relative; }
+.apps-icon {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; cursor: pointer;
+}
+.apps-icon:hover { background: rgba(60,64,67,0.1); }
+.apps-icon svg { fill: #5f6368; width: 24px; height: 24px; }
+
+.apps-dropdown {
+  display: none;
+  position: absolute;
+  top: 55px;
+  left: 10px; 
+  width: 320px;
+  background: #f8fafd; 
+  border-radius: 28px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+  padding: 20px;
+  z-index: 2000;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.app-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 12px 5px;
+  border-radius: 16px;
+  transition: background 0.2s;
+}
+
+.app-item:hover { background: #eef2fa; }
+
+.app-item img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  object-fit: contain;
+}
+
+.app-item span {
+  color: #1f1f1f;
+  font-size: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.profile-img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e1e1e1;
+  cursor: default;
+}
     .logo { font-size:92px; font-weight:bold; margin-top:100px; }
     .blue{color:#4285F4} .red{color:#EA4335} .yellow{color:#FBBC05} .green{color:#34A853}
     .search-box { margin:30px auto; width:600px; max-width:90%; }
@@ -164,6 +237,55 @@
 <header>
   <a href="https://mail.google.com" target="_blank">Gmail</a>
   <a href="images.html">صور</a>
+  
+  <div class="apps-container">
+    <div class="apps-icon" onclick="toggleApps(event)">
+<svg viewBox="0 0 24 24">
+    <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+  </svg>
+</div>
+    
+    <div id="appsMenu" class="apps-dropdown">
+      <a href="https://www.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png" alt="بحث">
+        <span>بحث</span>
+      </a>
+      <a href="https://maps.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg" alt="خرائط">
+        <span>خرائط</span>
+      </a>
+      <a href="https://mail.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail">
+        <span>Gmail</span>
+      </a>
+      <a href="https://www.youtube.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" alt="YouTube">
+        <span>YouTube</span>
+      </a>
+      <a href="https://drive.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Drive">
+        <span>Drive</span>
+      </a>
+      <a href="https://gemini.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/1024px-Google_Gemini_logo.svg.png" alt="Gemini">
+        <span>Gemini</span>
+      </a>
+      <a href="https://photos.google.com" class="app-item">
+        <img src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Icon_White_BG.width-500.format-webp.webp" alt="صور">
+        <span>صور</span>
+      </a>
+      <a href="https://translate.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Google_Translate_logo.svg" alt="ترجمة">
+        <span>ترجمة</span>
+      </a>
+      <a href="https://calendar.google.com" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="التقويم">
+        <span>التقويم</span>
+      </a>
+    </div>
+  </div>
+
+  <img src="https://lh3.googleusercontent.com/a/default-user=s64-c" class="profile-img" alt="Profile">
 </header>
 
 <div class="logo">
@@ -213,6 +335,22 @@
   </div>
 </div>
 <script>
+function toggleApps(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('appsMenu');
+    if (menu.style.display === 'grid') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'grid';
+    }
+}
+
+window.onclick = function(event) {
+    const menu = document.getElementById('appsMenu');
+    if (!event.target.closest('.apps-container')) {
+        menu.style.display = 'none';
+    }
+}
 function goToResults(query = null) {
   const q = query || document.getElementById("searchInput").value.trim();
   if (!q) return;
