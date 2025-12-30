@@ -533,22 +533,31 @@
     const resultsPerPage = 10;
 
 
+function changeTab(type) {
+    // 1. تحديث نوع البحث الحالي
+    currentType = type;
+    
+    // 2. إعادة تعيين رقم الصفحة للبداية عند تغيير القسم
+    currentPage = 1;
 
-    function changeTab(type) {
+    // 3. تحديث الشكل البصري للتبويبات
+    document.querySelectorAll('.tab').forEach(t => {
+        t.classList.remove('active');
+    });
 
-      currentType = type;
-
-      currentPage = 1;
-
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-
-      document.getElementById(`tab-${type}`).classList.add('active');
-
-      performSearch();
-
+    // 4. تفعيل التبويب المختار (مع فحص الأمان للتأكد من وجود العنصر)
+    const targetTab = document.getElementById(`tab-${type}`);
+    if (targetTab) {
+        targetTab.classList.add('active');
+    } else {
+        // إذا لم يجد التبويب المحدد، يفعل تبويب "الكل" كافتراضي
+        const allTab = document.getElementById('tab-all');
+        if (allTab) allTab.classList.add('active');
     }
 
-
+    // 5. استدعاء دالة جلب البيانات
+    performSearch();
+}
 
     function getDomainInfo(url) {
 
@@ -899,23 +908,17 @@ function renderPagination() {
       rec.start();
 
     }
+window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    const typeFromUrl = params.get('type') || 'all'; // استقبال النوع من الرابط
 
-
-
-    window.onload = () => {
-
-      const q = new URLSearchParams(window.location.search).get('q');
-
-      if (q) {
-
-        document.getElementById("searchInput").value = q;
-
-        performSearch();
-
-      }
-
-    };
-
+    if (q) {
+        document.getElementById('searchInput').value = q;
+        // استدعاء الدالة التي عدلناها بالأعلى
+        changeTab(typeFromUrl); 
+    }
+};
   </script>
 
 </body>
