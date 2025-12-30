@@ -1,519 +1,923 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>نتائج البحث - joojle</title>
+
   <link rel="icon" href="favicon.png" type="image/png">
+
   <style>
+
     :root {
+
       --google-blue: #1a0dab;
+
       --google-grey: #70757a;
+
       --google-border: #dfe1e5;
+
       --active-blue: #1a73e8;
+
       --site-name-color: #202124;
+
     }
+
+
 
     body {
+
       margin: 0;
+
       font-family: Arial, sans-serif;
+
       background: #fff;
+
       direction: rtl;
+
     }
+
+
 
     /* الهيدر العلوي */
+
     header {
+
       padding-top: 15px;
+
       border-bottom: 1px solid #ebebeb;
+
       background: white;
+
       position: sticky;
+
       top: 0;
+
       z-index: 100;
+
     }
+
+
 
     .top-bar {
+
       display: flex;
+
       align-items: center;
+
       padding: 0 3% 15px;
+
       gap: 20px;
+
     }
+
+
 
     .logo { 
+
       font-size: 24px; font-weight: bold; text-decoration: none;
+
       font-family: 'Product Sans', Arial, sans-serif;
+
       flex-shrink: 0;
+
     }
+
     .blue{color:#4285F4} .red{color:#EA4335} .yellow{color:#FBBC05} .green{color:#34A853}
 
+
+
     .search-box {
+
       flex: 1;
+
       display: flex;
+
       justify-content: center;
+
     }
+
+
 
     .search-wrapper {
+
       display: flex;
+
       align-items: center;
+
       gap: 8px;
+
       background: #fff;
+
       border: 1px solid var(--google-border);
+
       border-radius: 999px;
+
       padding: 5px 15px;
+
       box-shadow: 0 1px 6px rgba(32,33,36,.15);
+
       width: 100%;
+
       max-width: 720px;
+
       box-sizing: border-box;
+
     }
+
+
 
     .search-wrapper input {
+
       flex: 1; border: none; outline: none; font-size: 16px; padding: 8px; direction: rtl; background: transparent; min-width: 0;
+
     }
+
+
 
     .icon-btn { background: none; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
     .icon-btn svg { width: 22px; height: 22px; stroke: #5f6368; fill: none; stroke-width: 2; }
+
     .icon-btn:hover svg { stroke: var(--active-blue); }
 
+
+
     /* شريط التصنيفات */
+
     .tabs-container { display: flex; padding: 0 12%; gap: 20px; }
+
     .tab { padding: 10px 5px 12px; font-size: 14px; color: var(--google-grey); cursor: pointer; display: flex; align-items: center; gap: 5px; border-bottom: 3px solid transparent; transition: 0.2s; }
+
     .tab.active { color: var(--active-blue); border-bottom: 3px solid var(--active-blue); }
+
     .tab svg { width: 16px; height: 16px; fill: currentColor; }
 
+
+
     /* منطقة النتائج */
+
     #results {
+
       max-width: 650px;
+
       margin-right: 12%;
+
       margin-top: 20px;
+
       padding: 0 15px;
+
     }
 
-    /* كود إضافي لجعل الصور ملء الصفحة */
-    #results.image-mode {
-      max-width: 100% !important;
-      margin-right: 0 !important;
-      padding: 10px;
-    }
+
 
     .result { margin-bottom: 32px; }
 
+
+
     .result-header {
+
       display: flex;
+
       align-items: center;
+
       margin-bottom: 4px;
+
       gap: 12px;
+
     }
+
+
 
     .site-icon {
+
       width: 26px;
+
       height: 26px;
+
       background: #f1f3f4;
+
       border-radius: 50%;
+
       display: flex;
+
       align-items: center;
+
       justify-content: center;
+
       overflow: hidden;
+
       flex-shrink: 0;
+
     }
+
+
 
     .site-icon img { width: 16px; height: 16px; }
+
     .site-info { display: flex; flex-direction: column; }
+
     .site-name { font-size: 14px; color: var(--site-name-color); line-height: 1.3; }
+
     .site-url { font-size: 12px; color: var(--google-grey); direction: ltr; text-align: right; }
 
+
+
     .result a.title { font-size: 20px; color: var(--google-blue); text-decoration: none; display: inline-block; margin-bottom: 4px; }
+
     .result a.title:hover { text-decoration: underline; }
+
     .result .snippet { font-size: 14px; color: #4d5156; line-height: 1.58; word-wrap: break-word; }
 
+
+
     /* تنسيق الفيديوهات */
+
     .video-item {
+
       display: flex;
+
       gap: 16px;
+
       margin-top: 8px;
+
       align-items: flex-start;
+
     }
+
     .video-thumb-container {
+
       position: relative;
+
       width: 160px;
+
       height: 90px;
+
       flex-shrink: 0;
+
       border-radius: 12px;
+
       overflow: hidden;
+
       background: #000;
+
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+
     }
+
     .video-thumb-container img { width: 100%; height: 100%; object-fit: cover; }
+
     .play-overlay {
+
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+
       background: rgba(0,0,0,0.5); border-radius: 50%; width: 34px; height: 34px;
+
       display: flex; align-items: center; justify-content: center;
+
       border: 1.5px solid #fff;
+
     }
+
     .video-duration {
+
       position: absolute; bottom: 5px; left: 5px;
+
       background: rgba(0,0,0,0.8); color: white;
+
       font-size: 11px; padding: 1px 4px; border-radius: 4px;
+
       direction: ltr;
+
     }
+
     .video-info-side { flex: 1; }
 
+
+
     /* --- تنسيق الترقيم الجديد --- */
+
     .pagination {
+
       display: flex;
+
       flex-direction: column;
+
       align-items: center;
+
       margin: 40px 0 60px;
+
       font-family: Arial, sans-serif;
+
     }
+
     .pagination-logo {
+
       font-size: 32px;
+
       font-weight: bold;
+
       margin-bottom: 10px;
+
       display: flex;
+
       direction: ltr;
+
     }
+
     .pagination-numbers-wrap {
+
       display: flex;
+
       align-items: center;
+
       gap: 15px;
+
       list-style: none;
+
       padding: 0;
+
     }
+
     .pagination-numbers-wrap li {
+
       cursor: pointer;
+
       font-size: 14px;
+
       color: var(--active-blue);
+
     }
+
     .pagination-numbers-wrap li.active {
+
       color: #000;
+
       font-weight: bold;
+
       cursor: default;
+
     }
+
     .pagination-numbers-wrap li:hover:not(.active) {
+
       text-decoration: underline;
+
     }
+
     .nav-btn {
+
       display: flex;
+
       align-items: center;
+
       gap: 5px;
+
       font-size: 14px;
+
       color: var(--active-blue);
+
       cursor: pointer;
+
     }
+
     .prev-btn svg { transform: rotate(180deg); }
+
     /* --- نهاية تنسيق الترقيم --- */
 
-    /* تعديل شبكة الصور لتناسب كامل الصفحة */
-    .image-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-      gap: 10px; 
-    }
-    .img-card { 
-      border: 1px solid #efefef; 
-      border-radius: 8px; 
-      overflow: hidden; 
-      background: #fff;
-    }
-    .img-card img { width: 100%; border-radius: 0; object-fit: cover; height: 180px; }
-    .img-card .img-title { 
-      padding: 8px; 
-      font-size: 12px; 
-      color: #3c4043; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-    }
 
-    #loading-more {
-      text-align: center;
-      padding: 20px;
-      display: none;
-      color: var(--google-grey);
-    }
+
+    .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+
+    .img-card img { width: 100%; border-radius: 8px; object-fit: cover; height: 120px; }
+
+
 
     @media (max-width: 800px) {
+
       .top-bar { flex-direction: column; padding: 10px; gap: 10px; }
+
       .search-box { width: 100%; }
+
       .tabs-container { padding: 0 15px; justify-content: flex-start; overflow-x: auto; }
+
       #results { margin-right: 0; margin: auto; }
+
       .video-item { flex-direction: column; }
+
       .video-thumb-container { width: 100%; height: 180px; }
-      .image-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
     }
+
   </style>
+
 </head>
+
 <body>
 
+
+
   <header>
+
     <div class="top-bar">
+
       <a href="index.html" class="logo">
+
         <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
+
       </a>
 
+
+
       <div class="search-box">
+
         <div class="search-wrapper">
+
           <button class="icon-btn" onclick="currentPage=1; performSearch()" title="بحث">
+
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="22" y2="22"></line></svg>
+
           </button>
+
           <input id="searchInput" type="text" placeholder="ابحث في الويب..." onkeydown="if(event.key==='Enter'){currentPage=1; performSearch();}"/>
+
           <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
+
             <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+
           </button>
+
           <button class="icon-btn" onclick="imageSearch()" title="بحث بالصورة">
+
             <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+
           </button>
+
           <input type="file" id="imageInput" accept="image/*" hidden />
+
         </div>
+
       </div>
+
     </div>
+
+
 
     <div class="tabs-container">
+
       <div class="tab active" id="tab-all" onclick="changeTab('all')">
+
         <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>الكل
+
       </div>
+
       <div class="tab" id="tab-image" onclick="changeTab('image')">
+
         <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>صور
+
       </div>
+
       <div class="tab" id="tab-video" onclick="changeTab('video')">
+
         <svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>فيديوهات
+
       </div>
+
       <div class="tab" id="tab-news" onclick="changeTab('news')">
+
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>أخبار
+
       </div>
+
     </div>
+
   </header>
 
+
+
   <div id="results"></div>
-  <div id="loading-more">جاري تحميل المزيد من الصور...</div>
+
+
 
   <div id="pagination-container" class="pagination" style="display: none;">
+
     <div class="pagination-logo" id="pagination-logo"></div>
+
     <ul class="pagination-numbers-wrap">
+
       <div id="prev-btn-placeholder"></div>
+
       <div id="page-numbers-list" style="display: flex; gap: 12px;"></div>
+
       <div id="next-btn-placeholder"></div>
+
     </ul>
+
   </div>
 
+
+
   <script>
+
     const API_BASE = "https://joojle-one.vercel.app/api/search?q=";
+
     let currentType = 'all';
+
     let currentPage = 1;
-    let isFetching = false; // لمنع الطلبات المتكررة عند التمرير
+
     const resultsPerPage = 10;
 
+
+
     function changeTab(type) {
+
       currentType = type;
+
       currentPage = 1;
+
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
       document.getElementById(`tab-${type}`).classList.add('active');
+
       performSearch();
+
     }
+
+
 
     function getDomainInfo(url) {
+
       try {
+
         const urlObj = new URL(url);
+
         let hostname = urlObj.hostname.replace('www.', '');
+
         let siteName = hostname.split('.')[0];
+
         siteName = siteName.charAt(0).toUpperCase() + siteName.slice(1);
+
         return {
+
           domain: hostname,
+
           name: siteName,
+
           favicon: `https://www.google.com/s2/favicons?sz=64&domain=${hostname}`
+
         };
+
       } catch(e) {
+
         return { domain: url, name: "موقع", favicon: "https://via.placeholder.com/16" };
+
       }
+
     }
+
+
 
     async function performSearch() {
-      if (isFetching) return;
+
       const q = document.getElementById("searchInput").value.trim();
+
       if (!q) return;
 
-      const container = document.getElementById("results");
-      const paginationBox = document.getElementById("pagination-container");
-      
-      // تهيئة البحث لنتائج الصور (كامل الصفحة) أو العادية
-      if (currentType === 'image') {
-          container.classList.add('image-mode');
-          paginationBox.style.display = "none";
-      } else {
-          container.classList.remove('image-mode');
-      }
 
-      if (currentPage === 1) {
-          container.innerHTML = `<p style="color:#70757a; padding: 20px;">جاري تحميل صفحة ${currentPage}...</p>`;
-          window.scrollTo(0, 0);
-      }
+
+      const container = document.getElementById("results");
+
+      const paginationBox = document.getElementById("pagination-container");
+
+      
+
+      container.innerHTML = `<p style="color:#70757a; padding: 20px;">جاري تحميل صفحة ${currentPage}...</p>`;
+
+      paginationBox.style.display = "none";
+
+      window.scrollTo(0, 0);
+
+
+
+      // حساب معامل start لمنع تكرار النتائج
 
       const start = (currentPage - 1) * resultsPerPage;
-      isFetching = true;
+
+
 
       try {
+
         const res = await fetch(`${API_BASE}${encodeURIComponent(q)}&type=${currentType}&start=${start}`);
+
         const data = await res.json();
-        
-        if (currentPage === 1) container.innerHTML = '';
+
+        container.innerHTML = '';
+
         const items = Array.isArray(data) ? data : (data.items || []);
 
+
+
         if (items.length === 0) {
-          if (currentPage === 1) container.innerHTML = '<p style="padding: 20px;">لم يتم العثور على نتائج.</p>';
-          isFetching = false;
+
+          container.innerHTML = '<p style="padding: 20px;">لم يتم العثور على نتائج إضافية.</p>';
+
           return;
+
         }
+
+
 
         if (currentType === 'image') {
-          let grid = container.querySelector('.image-grid');
-          if (!grid) {
-            grid = document.createElement('div');
-            grid.className = 'image-grid';
-            container.appendChild(grid);
-          }
+
+          const grid = document.createElement('div');
+
+          grid.className = 'image-grid';
 
           items.forEach(item => {
-            const domain = getDomainInfo(item.link);
+
             grid.innerHTML += `
+
               <div class="img-card">
+
                 <a href="${item.link}" target="_blank">
+
                   <img src="${item.image || item.link}" onerror="this.src='https://via.placeholder.com/150'">
-                  <div class="img-title">
-                     <img src="${domain.favicon}" style="width:12px; height:12px; margin-left:4px;">
-                     ${item.title}
-                  </div>
+
+                  <div style="font-size:11px; margin-top:5px; color:#70757a">${item.title.substring(0,25)}</div>
+
                 </a>
+
               </div>`;
+
           });
-          // إخفاء الترقيم في وضع الصور لاعتماد التمرير اللانهائي
-          paginationBox.style.display = "none";
+
+          container.appendChild(grid);
+
         } else {
+
           items.forEach(item => {
+
             const info = getDomainInfo(item.link);
+
             const div = document.createElement('div');
+
             div.className = 'result';
+
             
+
             let contentHTML = `
+
               <div class="result-header">
+
                 <div class="site-icon"><img src="${info.favicon}" alt=""></div>
+
                 <div class="site-info">
+
                   <span class="site-name">${info.name}</span>
+
                   <span class="site-url">${info.domain}</span>
+
                 </div>
+
               </div>
+
               <a class="title" href="${item.link}" target="_blank">${item.title}</a>
+
             `;
 
+
+
             if (currentType === 'video') {
+
               contentHTML += `
+
                 <div class="video-item">
+
                   <div class="video-thumb-container">
+
                     <img src="${item.image || 'https://via.placeholder.com/160x90?text=Video'}" onerror="this.src='https://via.placeholder.com/160x90'">
+
                     <div class="play-overlay">
+
                       <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+
                     </div>
+
                     ${item.duration ? `<div class="video-duration">${item.duration}</div>` : ''}
+
                   </div>
+
                   <div class="video-info-side">
+
                     <div class="snippet">${item.snippet || 'مشاهدة الفيديو على ' + info.name}</div>
+
                   </div>
+
                 </div>
+
               `;
+
             } else {
+
               contentHTML += `<div class="snippet">${item.snippet || ''}</div>`;
+
             }
 
+
+
             div.innerHTML = contentHTML;
+
             container.appendChild(div);
+
           });
-          
-          renderPagination();
-          paginationBox.style.display = "flex";
+
         }
+
+
+
+        // تحديث واجهة الترقيم
+
+        renderPagination();
+
+        paginationBox.style.display = "flex";
+
+
 
       } catch (err) {
-        if (currentPage === 1) container.innerHTML = '<p style="padding: 20px;">حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.</p>';
-      } finally {
-        isFetching = false;
-        document.getElementById('loading-more').style.display = "none";
+
+        container.innerHTML = '<p style="padding: 20px;">حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.</p>';
+
       }
+
     }
 
-    // منطق التمرير اللانهائي للصور فقط
-    window.onscroll = function() {
-      if (currentType !== 'image') return;
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-        if (!isFetching) {
-          currentPage++;
-          document.getElementById('loading-more').style.display = "block";
-          performSearch();
-        }
-      }
-    };
 
-    function renderPagination() {
+
+function renderPagination() {
+
       const logoDiv = document.getElementById("pagination-logo");
+
       const list = document.getElementById("page-numbers-list");
+
       const prevWrap = document.getElementById("prev-btn-placeholder");
+
       const nextWrap = document.getElementById("next-btn-placeholder");
 
+
+
+      // إنشاء شعار joooooooooojle الملون
+
+      // j (أزرق)
+
       let logoHTML = '<span class="blue">j</span>'; 
+
+      
+
+      // توليد 10 حروف o
+
       for(let i=0; i<10; i++) {
-        logoHTML += (i === 0) ? '<span class="red">o</span>' : '<span class="yellow">o</span>';
+
+        if (i === 0) {
+
+          // أول حرف o (أحمر)
+
+          logoHTML += '<span class="red">o</span>';
+
+        } else {
+
+          // بقية الحروف o (أصفر)
+
+          logoHTML += '<span class="yellow">o</span>';
+
+        }
+
       }
+
+      
+
+      // إضافة j (أزرق) - l (أخضر) - e (أحمر)
+
       logoHTML += '<span class="blue">j</span><span class="green">l</span><span class="red">e</span>';
+
+      
+
       logoDiv.innerHTML = logoHTML;
 
+
+
+      // زر السابقة (يظهر فقط إذا لم تكن في الصفحة الأولى)
+
       prevWrap.innerHTML = currentPage > 1 ? `
+
         <li class="nav-btn prev-btn" onclick="goToPage(${currentPage - 1})">
+
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+
           السابقة
+
         </li>` : '';
+
+
+
+      // توليد أرقام الصفحات من 1 إلى 10
 
       list.innerHTML = '';
+
       for(let i=1; i<=10; i++) {
+
         const li = document.createElement('li');
+
         li.innerText = i;
+
         if(i === currentPage) li.className = 'active';
+
         li.onclick = () => goToPage(i);
+
         list.appendChild(li);
+
       }
 
+
+
+      // زر التالية (يظهر حتى الصفحة التاسعة)
+
       nextWrap.innerHTML = currentPage < 10 ? `
+
         <li class="nav-btn next-btn" onclick="goToPage(${currentPage + 1})">
+
           التالية
+
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+
         </li>` : '';
+
     }
 
     function goToPage(p) {
+
       currentPage = p;
+
       performSearch();
+
     }
+
+
 
     function imageSearch() { document.getElementById("imageInput").click(); }
+
     document.getElementById("imageInput").onchange = function() {
+
       if(this.files[0]) alert("جاري البحث باستخدام الصورة: " + this.files[0].name);
+
     };
+
+
 
     function voiceSearch() {
+
       if (!('webkitSpeechRecognition' in window)) return alert("متصفحك لا يدعم البحث الصوتي.");
+
       const rec = new webkitSpeechRecognition();
+
       rec.lang = "ar-SA";
+
       rec.onresult = (e) => {
+
         document.getElementById("searchInput").value = e.results[0][0].transcript;
+
         currentPage = 1;
+
         performSearch();
+
       };
+
       rec.start();
+
     }
 
+
+
     window.onload = () => {
+
       const q = new URLSearchParams(window.location.search).get('q');
+
       if (q) {
+
         document.getElementById("searchInput").value = q;
+
         performSearch();
+
       }
+
     };
+
   </script>
+
 </body>
+
 </html>
