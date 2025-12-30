@@ -1,383 +1,273 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>بحث الصور - joojle</title>
   <link rel="icon" href="favicon.png" type="image/png">
-
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      direction: rtl;
+    :root {
+      --google-blue: #1a0dab;
+      --google-grey: #70757a;
+      --google-border: #dfe1e5;
+      --active-blue: #1a73e8;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    header a {
-      text-decoration: none;
-      color: #4285F4;
-      font-weight: bold;
-    }
-    .logo { font-size:25px; font-weight:bold; margin-top:-1px; }
-    .blue{color:#4285F4} .red{color:#EA4335} .yellow{color:#FBBC05} .green{color:#34A853}
+    body { margin: 0; font-family: Arial, sans-serif; background: #fff; direction: rtl; }
     
+    header { padding-top: 15px; border-bottom: 1px solid #ebebeb; background: white; position: sticky; top: 0; z-index: 100; }
+    .top-bar { display: flex; align-items: center; padding: 0 3% 15px; gap: 20px; }
+    .logo { font-size: 27px; font-weight: bold; text-decoration: none; flex-shrink: 0; }
+    .blue{color:#4285F4} .red{color:#EA4335} .yellow{color:#FBBC05} .green{color:#34A853}
     .search-box {
-      margin: 20px auto;
-      max-width: 600px;
+      flex: 1;
       display: flex;
       justify-content: center;
     }
-
-    h1 {
-      text-align: center;
-      margin: 20px 0;
-    }
-
     .search-wrapper {
       display: flex;
       align-items: center;
+      gap: 8px;
       background: #fff;
-      border: 1px solid #ddd;
+      border: 1px solid var(--google-border);
       border-radius: 999px;
-      padding: 8px 12px;
-      box-shadow: 0 1px 6px rgba(32,33,36,.28);
+      padding: 5px 15px;
+      box-shadow: 0 1px 6px rgba(32,33,36,.15);
       width: 100%;
-      max-width: 600px;
+      max-width: 720px;
+      box-sizing: border-box;
     }
-
     .search-wrapper input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 16px;
-      padding: 10px;
-      direction: rtl;
+      flex: 1; border: none; outline: none; font-size: 16px; padding: 8px; direction: rtl; background: transparent; min-width: 0;
     }
+    .icon-btn { background: none; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .icon-btn svg { width: 22px; height: 22px; stroke: #5f6368; fill: none; stroke-width: 2; }
+    .icon-btn:hover svg { stroke: var(--active-blue); }
+    .tabs-container { display: flex; padding: 0 12%; gap: 20px; }
+    .tab { 
+      padding: 10px 5px 12px; font-size: 14px; color: var(--google-grey); cursor: pointer; 
+      display: flex; align-items: center; gap: 5px; border-bottom: 3px solid transparent; text-decoration: none; 
+    }
+    .tab.active { color: var(--active-blue); border-bottom: 3px solid var(--active-blue); }
+    .tab svg { width: 16px; height: 16px; fill: currentColor; }
 
-    .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px;
-      display: flex;
-      align-items: center;
-    }
+    /* تنسيق شبكة الصور */
+    #results-area { max-width: 1300px; margin: 20px auto; padding: 0 20px; }
+    .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    .img-card { border-radius: 8px; overflow: hidden; border: 1px solid #eee; cursor: pointer; }
+    .img-card img { width: 100%; height: 150px; object-fit: cover; background: #f8f9fa; }
+    .img-info { padding: 8px; font-size: 12px; }
 
-    .icon-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke: #5f6368;
-      fill: none;
-      stroke-width: 2;
-    }
+    /* تنسيق النتائج النصية (الكل/أخبار/فيديو) */
+    .web-result { margin-bottom: 30px; max-width: 650px; }
+    .web-result a { text-decoration: none; }
+    .web-result .url { color: #202124; font-size: 14px; margin-bottom: 4px; display: block; }
+    .web-result .title { color: var(--google-blue); font-size: 20px; margin-bottom: 4px; display: block; }
+    .web-result .title:hover { text-decoration: underline; }
+    .web-result .snippet { color: #4d5156; font-size: 14px; line-height: 1.5; }
 
-    .icon-btn:hover svg {
-      stroke: #1a73e8;
-    }
-
-    /* معرض الصور */
-    #imgs {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      max-width: 1300px;
-      margin: 20px auto;
-      padding: 10px;
-    }
-
-    .img-item {
-      height: 200px;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      background: #ddd;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .img-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .3s;
-    }
-
-    .img-item:hover img {
-      transform: scale(1.08);
-    }
-
-    .load-more {
-      display: none;
-      margin: 30px auto;
-      padding: 12px 30px;
-      border-radius: 30px;
-      border: 1px solid #ddd;
-      background: #fff;
-      cursor: pointer;
-      font-size: 15px;
-      transition: 0.3s;
-    }
-
-    .load-more:hover {
-        background-color: #f8f9fa;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+    .pagination { display: flex; flex-direction: column; align-items: center; margin: 40px 0; }
+    .pagination-logo { font-size: 30px; font-weight: bold; margin-bottom: 10px; display: flex; direction: ltr; }
 
     #lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+      display: none; align-items: center; justify-content: center; z-index: 2000; flex-direction: column;
     }
+    #lightbox img { max-width: 90%; max-height: 80%; }
+    .close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; cursor: pointer; }
 
-    #lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 8px;
-    }
+    @media (max-width: 800px) { .top-bar { flex-direction: column; } .tabs-container { padding: 0 5%; } }
   </style>
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 </head>
 <body>
 
-<header>
-  <a href="index.html">الرئيسية</a>
-  <div class="logo">
-    <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
+  <header>
+    <div class="top-bar">
+      <a href="index.html" class="logo">
+        <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
+      </a>
+      <div class="search-box">
+        <div class="search-wrapper">
+          <button class="icon-btn" onclick="executeSearch()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="22" y2="22"></line></svg></button>
+          <input id="searchInput" type="text" placeholder="ابحث في الويب..." onkeydown="if(event.key==='Enter') executeSearch()"/>
+          <button class="icon-btn" onclick="voiceSearch()"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></button>
+          <button class="icon-btn" onclick="document.getElementById('imageInput').click()"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 15l-5-5L5 21"/></svg></button>
+          <input type="file" id="imageInput" accept="image/*" hidden />
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tab active" id="tab-all" onclick="changeTab('all')">
+        <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>الكل
+      </div>
+      <div class="tab" id="tab-image" onclick="changeTab('image')">
+        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>صور
+      </div>
+      <div class="tab" id="tab-video" onclick="changeTab('video')">
+        <svg viewBox="0 0 24 24"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>فيديوهات
+      </div>
+      <div class="tab" id="tab-news" onclick="changeTab('news')">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>أخبار
+      </div>
+    </div>
+  </header>
+
+  <main id="results-area"></main>
+
+  <nav id="pagination-box" class="pagination" style="display: none;">
+    <div class="pagination-logo" id="pag-logo"></div>
+    <div style="display: flex; gap: 15px; align-items: center;">
+      <div id="prev-btn"></div>
+      <div id="num-list" style="display: flex; gap: 8px;"></div>
+      <div id="next-btn"></div>
+    </div>
+  </nav>
+
+  <div id="lightbox" onclick="this.style.display='none'">
+    <span class="close-btn">&times;</span>
+    <img id="lightboxImg">
   </div>
-</header>
 
-<h1>بحث الصور</h1>
+  <script>
+    let currentTab = 'image';
+    let currentPage = 1;
 
-<div class="search-box">
-  <div class="search-wrapper">
-    <button class="icon-btn" onclick="startSearch()" title="بحث">
-      <svg viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="7"></circle>
-        <line x1="16.65" y1="16.65" x2="22" y2="22"></line>
-      </svg>
-    </button>
-
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="ابحث في الصور..."
-      onkeydown="if(event.key==='Enter')startSearch()"
-    />
-
-    <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-        <path d="M19 11a7 7 0 0 1-14 0"/>
-        <line x1="12" y1="18" x2="12" y2="22"/>
-        <line x1="8" y1="22" x2="16" y2="22"/>
-      </svg>
-    </button>
-
-    <button class="icon-btn" onclick="imageSearch()" title="بحث بالصورة">
-      <svg viewBox="0 0 24 24">
-        <rect x="3" y="5" width="18" height="14" rx="2"/>
-        <circle cx="9" cy="10" r="2"/>
-        <path d="M21 15l-5-5L5 21"/>
-      </svg>
-    </button>
-    <input type="file" id="imageInput" accept="image/*" hidden />
-  </div>
-</div>
-
-<div id="imgs"></div>
-<button id="loadMoreBtn" class="load-more" onclick="loadMore()">تحميل المزيد</button>
-
-<div id="lightbox" onclick="closeLightbox()">
-  <img id="lightboxImg">
-</div>
-
-<script>
-let lastQuery = "";
-let currentStart = 1; // مؤشر بداية البحث للـ Pagination
-
-async function startSearch(){
-  const q = document.getElementById("searchInput").value.trim();
-  if(!q) return;
-  
-  lastQuery = q;
-  currentStart = 1; // إعادة تعيين لقمة البحث الجديد
-  document.getElementById("imgs").innerHTML = "<p style='text-align:center;'>جاري البحث...</p>";
-  document.getElementById("loadMoreBtn").style.display = "none";
-  
-  await performSearch(true);
-}
-
-async function loadMore(){
-  currentStart += 10; // زيادة المؤشر بمقدار 10 لجلب الصفحة التالية
-  document.getElementById("loadMoreBtn").innerText = "جاري التحميل...";
-  await performSearch(false);
-}
-
-async function performSearch(isNewSearch){
-  try {
-    // إرسال q و start للتحكم في الصفحات
-    const res = await fetch(`/api/images/search?q=${encodeURIComponent(lastQuery)}&start=${currentStart}`);
-    
-    if (!res.ok) throw new Error("فشل في جلب النتائج");
-    
-    const data = await res.json();
-    displayResults(data, isNewSearch);
-  } catch (err) {
-    if(isNewSearch) {
-        document.getElementById("imgs").innerHTML = `<p style='text-align:center; color:red;'>خطأ: ${err.message}</p>`;
-    } else {
-        alert("خطأ أثناء تحميل المزيد: " + err.message);
+    async function changeTab(type) {
+      currentTab = type;
+      currentPage = 1;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab-${type}`).classList.add('active');
+      fetchData();
     }
-  }
-}
 
-function displayResults(items, isNewSearch) {
-  const container = document.getElementById("imgs");
-  const loadMoreBtn = document.getElementById("loadMoreBtn");
+    function executeSearch() {
+      currentPage = 1;
+      fetchData();
+    }
 
-  if (isNewSearch) container.innerHTML = ""; 
+    async function fetchData() {
+      const q = document.getElementById("searchInput").value.trim();
+      if (!q) return;
 
-  if (items.length === 0) {
-    if(isNewSearch) container.innerHTML = "<p style='text-align:center;'>لم يتم العثور على صور.</p>";
-    loadMoreBtn.style.display = "none";
-    return;
-  }
+      const container = document.getElementById("results-area");
+      container.innerHTML = `<div style="text-align:center; padding: 50px;">جاري البحث...</div>`;
+      
+      const start = (currentPage - 1) * 10 + 1;
+      
+      // اختيار المسار بناءً على النوع
+      let url = (currentTab === 'image') 
+                ? `/api/images/search?q=${encodeURIComponent(q)}&start=${start}` 
+                : `/api/search?q=${encodeURIComponent(q)}&type=${currentTab}&start=${start}`;
 
-  items.forEach(item => {
-    const div = document.createElement("div");
-    div.className = "img-item";
-    div.innerHTML = `<img src="${item.link}" alt="${item.title}" loading="lazy" onerror="this.parentElement.style.display='none'">`;
-    div.onclick = () => openLightbox(item.link);
-    container.appendChild(div);
-  });
-  
-  // تحديث حالة زر تحميل المزيد
-  loadMoreBtn.style.display = "block";
-  loadMoreBtn.innerText = "تحميل المزيد";
-}
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (currentTab === 'image') {
+          renderImages(data);
+        } else {
+          renderWebResults(data);
+        }
+        updatePagination();
+      } catch (e) {
+        container.innerHTML = "حدث خطأ أثناء جلب البيانات.";
+      }
+    }
 
-function openLightbox(src){
-  document.getElementById("lightboxImg").src = src;
-  document.getElementById("lightbox").style.display = "flex";
-}
+    function renderImages(items) {
+      const container = document.getElementById("results-area");
+      container.innerHTML = '<div class="image-grid"></div>';
+      const grid = container.querySelector('.image-grid');
 
-function closeLightbox(){
-  document.getElementById("lightbox").style.display = "none";
-}
-
-function voiceSearch() {
-  if (!('webkitSpeechRecognition' in window)) {
-    alert("البحث الصوتي غير مدعوم في هذا المتصفح");
-    return;
-  }
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "ar-SA";
-  recognition.start();
-  recognition.onresult = function (event) {
-    document.getElementById("searchInput").value = event.results[0][0].transcript;
-    startSearch();
-  };
-}
-let classifier;
-async function loadModel() {
-    classifier = await ml5.imageClassifier('MobileNet');
-    console.log("Model Loaded!");
-}
-loadModel();
-
-
-function imageSearch() {
-    document.getElementById("imageInput").click();
-}
-
-document.getElementById("imageInput").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const container = document.getElementById("imgs");
-    const searchInput = document.getElementById("searchInput");
-    
-    // إظهار حالة التحميل
-    container.innerHTML = `
-        <div style="text-align:center; padding: 20px;">
-            <p>🔄 جاري تحليل الصورة...</p>
-            <div class="spinner"></div> 
-        </div>`;
-
-    const reader = new FileReader();
-    reader.onload = function (event) {
-        const imgElement = new Image();
-        imgElement.src = event.target.result;
-
-        imgElement.onload = async () => {
-            try {
-                // التأكد من تحميل الموديل
-                if (!classifier) classifier = await ml5.imageClassifier('MobileNet');
-
-                // طلب أفضل 3 نتائج للتحليل
-                const results = await classifier.classify(imgElement, 3);
-
-                // معالجة النص: نأخذ الكلمة الأساسية فقط ونبتعد عن التفاصيل المعقدة
-                // مثال: "Egyptian cat, house cat" تصبح "Egyptian cat"
-                let mainLabel = results[0].label.split(',')[0];
-                let secondLabel = results[1].label.split(',')[0];
-
-                // إذا كانت نسبة التأكد ضعيفة (أقل من 40%)، ندمج نتيجتين لتحسين البحث
-                let finalQuery = mainLabel;
-                if (results[0].confidence < 0.4) {
-                    finalQuery = `${mainLabel} ${secondLabel}`;
-                }
-
-                // تحديث واجهة المستخدم بالنتائج
-                searchInput.value = finalQuery;
-                lastQuery = finalQuery;
-                currentStart = 1;
-
-                console.log("النتائج المقترحة:", results);
-                console.log("كلمة البحث النهائية:", finalQuery);
-
-                // تنفيذ البحث
-                await performSearch(true);
-
-            } catch (err) {
-                console.error("Analysis Error:", err);
-                container.innerHTML = "<p style='text-align:center; color:red;'>❌ فشل الذكاء الاصطناعي في التعرف على الصورة. حاول استخدام صورة أوضح.</p>";
-            }
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'img-card';
+        card.onclick = () => {
+          document.getElementById('lightboxImg').src = item.link;
+          document.getElementById('lightbox').style.display = 'flex';
         };
-    };
-    reader.readAsDataURL(file);
-});
-window.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const q = urlParams.get("q");
-  
-  if (q) {
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) searchInput.value = q;
-    
-    // استدعاء دالة البحث عن الصور لديك (تأكد من اسمها في صفحة images)
-    if (typeof startSearch === "function") {
-        startSearch(); 
-    } else if (typeof performSearch === "function") {
-        lastQuery = q;
-        performSearch(true);
+        card.innerHTML = `
+          <img src="${item.thumbnail || item.link}" loading="lazy">
+          <div class="img-info">
+            <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</div>
+            <div style="color:gray; font-size:10px;">${item.displayLink}</div>
+          </div>`;
+        grid.appendChild(card);
+      });
     }
-  }
-});
-</script>
 
+    function renderWebResults(data) {
+      const container = document.getElementById("results-area");
+      container.innerHTML = '';
+      const items = Array.isArray(data) ? data : (data.items || []);
+
+      items.forEach(item => {
+        const res = document.createElement('div');
+        res.className = 'web-result';
+        res.innerHTML = `
+          <a href="${item.link}" target="_blank">
+            <span class="url">${item.displayLink}</span>
+            <span class="title">${item.title}</span>
+          </a>
+          <div class="snippet">${item.snippet || ''}</div>
+        `;
+        container.appendChild(res);
+      });
+    }
+
+    function updatePagination() {
+      const pag = document.getElementById('pagination-box');
+      const numList = document.getElementById('num-list');
+      const logo = document.getElementById('pag-logo');
+      
+      pag.style.display = 'flex';
+      numList.innerHTML = '';
+      
+      // شعار الترقيم
+      let logoTxt = '<span class="blue">j</span>';
+      for(let i=0; i<10; i++) logoTxt += `<span class="${i===0?'red':'yellow'}">o</span>`;
+      logo.innerHTML = logoTxt + '<span class="blue">j</span><span class="green">l</span><span class="red">e</span>';
+
+      for(let i=1; i<=10; i++) {
+        const btn = document.createElement('div');
+        btn.innerText = i;
+        btn.style.cursor = 'pointer';
+        btn.style.color = (i === currentPage) ? 'black' : 'var(--active-blue)';
+        btn.style.fontWeight = (i === currentPage) ? 'bold' : 'normal';
+        btn.onclick = () => { currentPage = i; fetchData(); window.scrollTo(0,0); };
+        numList.appendChild(btn);
+      }
+    }
+
+    // تهيئة الصفحة من الرابط
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      if(params.get('q')) {
+        document.getElementById('searchInput').value = params.get('q');
+        fetchData();
+      }
+    };
+
+    // ميزات إضافية (صوت، ملفات)
+    function voiceSearch() {
+      const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      rec.lang = 'ar-SA';
+      rec.onresult = (e) => { document.getElementById('searchInput').value = e.results[0][0].transcript; executeSearch(); };
+      rec.start();
+    }
+
+    document.getElementById('imageInput').onchange = async (e) => {
+      const classifier = await ml5.imageClassifier('MobileNet');
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(e.target.files[0]);
+      img.onload = async () => {
+        const results = await classifier.classify(img);
+        document.getElementById('searchInput').value = results[0].label.split(',')[0];
+        executeSearch();
+      };
+    };
+  </script>
 </body>
 </html>
