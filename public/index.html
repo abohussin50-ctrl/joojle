@@ -6,8 +6,8 @@
   <title>joojle</title>
   <meta name="description" content="joojle هو محرك بحث ذكي وسريع شبيه بجوجل، يمكنك من خلاله البحث في الويب بسهولة ودقة.">
   <meta name="keywords" content="joojle, joojle search, google alternative, محرك بحث, بحث, بحث عربي, بحث سريع, محرك بحث عربي, بديل جوجل, بحث الويب, بحث ذكي, محرك بحث يشبه Google, جوجل, بحث متقدم">
-  <meta name="google-site-verification" content="SPV5E-84KA3wRJP5qafkJQiErlt7jJnw_R6jZAI_B-s" />
   <link rel="icon" href="favicon.png" type="image/png">
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <style>
     body { background:#fff; font-family:Arial, sans-serif; margin:0; padding:0; direction:rtl; text-align:center; }
     header { display:flex; justify-content:flex-end; padding:15px 30px; font-size:14px; }
@@ -27,7 +27,7 @@
 .search-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px; 
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 999px;
@@ -58,7 +58,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  flex-shrink: 0; 
 }
 
 .icon-btn svg {
@@ -72,6 +72,7 @@
 .icon-btn:hover svg {
   stroke: #1a73e8;
 }
+
 @media (max-width: 480px) {
   .search-wrapper {
     padding: 6px 10px;
@@ -92,10 +93,71 @@
     height: 18px;
   }
 }
+.customize {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  background: #ffe8dc !important;
+  color: #000000 !important;
+  border: 1px solid #dfe1e5;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+}
 
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0; top: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #ffffff !important;
+  color: #202124 !important;
+  margin: 5% auto;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  text-align: right;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal-content h3, .modal-content label, .modal-content span {
+  color: #202124 !important;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.customize-option { margin-bottom: 15px; }
+
+.input-style {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #dfe1e5;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.close-modal {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
   </style>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7559491443488147"
-     crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -151,7 +213,6 @@
   </div>
 </div>
 <script>
-/* الانتقال إلى صفحة النتائج */
 function goToResults(query = null) {
   const q = query || document.getElementById("searchInput").value.trim();
   if (!q) return;
@@ -159,7 +220,6 @@ function goToResults(query = null) {
   window.location.href = `results.html?q=${encodeURIComponent(q)}`;
 }
 
-/* البحث الصوتي */
 function voiceSearch() {
   if (!("webkitSpeechRecognition" in window)) {
     alert("المتصفح لا يدعم البحث الصوتي");
@@ -177,7 +237,6 @@ function voiceSearch() {
   };
 }
 
-/* البحث بالصورة (انتقال فقط حالياً) */
 function imageSearch() {
   document.getElementById("imageInput").click();
 }
@@ -186,7 +245,6 @@ document.getElementById("imageInput").addEventListener("change", function () {
   const file = this.files[0];
   if (!file) return;
 
-  // مؤقتًا: ينتقل لصفحة النتائج
   window.location.href = "results.html?image=1";
 });
 </script>
@@ -194,16 +252,11 @@ document.getElementById("imageInput").addEventListener("change", function () {
 <script>
 function handleEnter(e) {
   if (e.key === 'Enter') {
-    e.preventDefault(); // يمنع السلوك الافتراضي (إرسال الفورم أو إعادة تحميل الصفحة)
+    e.preventDefault();
     const query = document.getElementById("searchInput").value;
     if (!query) return;
     
-    // فتح صفحة النتائج مع تمرير الكلمة في الـ URL
     window.location.href = `results.html?q=${encodeURIComponent(query)}`;
-    
-    // الكلمة تبقى في مربع البحث
-    // إذا أردت، يمكنك إعادة تعيين القيمة هنا:
-    // document.getElementById("searchInput").value = query;
   }
 }
 </script>
@@ -221,9 +274,106 @@ function handleEnter(e) {
   </div>
 </div>
 
-<div class="customize" onclick="alert('هذه ميزة تخصيص الواجهة قيد التطوير!')">🖌 تخصيص Chrome</div>
+<div class="customize" onclick="openCustomizeModal()">
+  <svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="#5f6368"></path></svg>
+  تخصيص joojle
+</div>
 
+<div id="customizeModal" class="modal">
+  <div class="modal-content">
+    <h3>تخصيص joojle</h3>
+    
+<div class="customize-option">
+  <label>لون الخلفية:</label>
+  <input type="color" id="bgColorPicker" value="#ffffff" onchange="updateTheme()">
+</div>
+
+<div class="customize-option">
+  <label>لون النصوص:</label>
+  <input type="color" id="textColorPicker" value="#000000" onchange="updateTheme()">
+</div>
+    <div class="customize-option">
+      <label>رابط صورة خلفية:</label>
+      <input type="text" id="bgImageUrl" class="input-style" placeholder="https://..." onchange="updateTheme()">
+    </div>
+
+    <div class="customize-option">
+      <label>تحميل صورة من جهازك:</label>
+      <input type="file" id="bgImageFile" accept="image/*" class="input-style" onchange="handleFileUpload(this)">
+    </div>
+
+    <button class="close-modal" onclick="closeCustomizeModal()">حفظ وإغلاق</button>
+    <button onclick="resetTheme()" style="background:none; border:none; color:#ea4335; cursor:pointer; width:100%; margin-top:10px; font-size:12px;">إلغاء المظهر المخصص</button>
+  </div>
+</div>
 <script>
+let uploadedImageData = ""; 
+
+function openCustomizeModal() { document.getElementById('customizeModal').style.display = 'block'; }
+function closeCustomizeModal() { document.getElementById('customizeModal').style.display = 'none'; }
+
+function handleFileUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadedImageData = e.target.result;
+            document.getElementById('bgImageUrl').value = ""; 
+            updateTheme();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function updateTheme() {
+    const bgColor = document.getElementById('bgColorPicker').value;
+    const textColor = document.getElementById('textColorPicker').value;
+    const bgUrl = document.getElementById('bgImageUrl').value.trim();
+    
+    const finalBgImage = uploadedImageData || (bgUrl ? `url('${bgUrl}')` : "");
+
+    document.body.style.backgroundColor = bgColor;
+    if (finalBgImage) {
+        document.body.style.backgroundImage = finalBgImage.startsWith('data') ? `url('${finalBgImage}')` : finalBgImage;
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundAttachment = "fixed";
+        document.body.style.backgroundPosition = "center";
+    } else {
+        document.body.style.backgroundImage = "none";
+    }
+
+    document.querySelectorAll('header a').forEach(a => {
+        a.style.setProperty('color', textColor, 'important');
+    });
+
+    document.querySelectorAll('.shortcut div').forEach(div => {
+        if (!div.classList.contains('shortcut-circle')) {
+            div.style.setProperty('color', textColor, 'important');
+        }
+    });
+
+    const settings = { bgColor, textColor, bgUrl, uploadedImageData };
+    localStorage.setItem('joojleTheme', JSON.stringify(settings));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('joojleTheme');
+    if (saved) {
+        const s = JSON.parse(saved);
+        document.getElementById('bgColorPicker').value = s.bgColor || "#ffffff";
+        document.getElementById('textColorPicker').value = s.textColor || "#202124";
+        document.getElementById('bgImageUrl').value = s.bgUrl || "";
+        uploadedImageData = s.uploadedImageData || "";
+        updateTheme();
+    }
+});
+
+function resetTheme() {
+    if(confirm("هل تريد العودة للمظهر الأصلي؟")) {
+        localStorage.removeItem('joojleTheme');
+        location.reload();
+    }
+}
 function copyLink(){navigator.clipboard.writeText(window.location.href).then(()=>{alert("تم نسخ الرابط إلى الحافظة!");});}
 
 function createShortcutElement(name,url){
@@ -250,7 +400,7 @@ window.addEventListener("DOMContentLoaded",()=>{
 </script>
 
 <script>
-const API_BASE = ""; // نسبي، يعمل على localhost و Vercel
+const API_BASE = ""; 
 
 async function search(){
   const q=document.getElementById("searchInput").value;
@@ -300,6 +450,42 @@ async function loadModel() {
     }
 }
 loadModel();
+
+function imageSearch() {
+    document.getElementById("imageInput").click();
+}
+
+document.getElementById("imageInput").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const searchInput = document.getElementById("searchInput");
+    searchInput.value = "جاري تحليل الصورة...";
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const imgElement = new Image();
+        imgElement.src = event.target.result;
+
+        imgElement.onload = async () => {
+            try {
+                if (!classifier) classifier = await ml5.imageClassifier('MobileNet');
+
+                const results = await classifier.classify(imgElement);
+                
+                let foundObject = results[0].label.split(',')[0].trim();
+
+                window.location.href = `images.html?q=${encodeURIComponent(foundObject)}`;
+
+            } catch (err) {
+                console.error("خطأ في التحليل:", err);
+                alert("عذراً، لم نتمكن من التعرف على محتوى الصورة.");
+                searchInput.value = "";
+            }
+        };
+    };
+    reader.readAsDataURL(file);
+});
 </script>
 
 </body>
