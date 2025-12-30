@@ -230,64 +230,134 @@ header a {
   width: 100%;
   margin-top: 10px;
 }
+/* --- نسخة الكمبيوتر (الافتراضية) --- */
+.desktop-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 15px;
+  direction: rtl;
+}
+
+.mobile-header { display: none; } /* إخفاء نسخة الهاتف في الشاشات الكبيرة */
+
+.d-links { display: flex; gap: 15px; }
+.d-actions { display: flex; align-items: center; gap: 15px; }
+
+/* --- نسخة الهاتف (عند الشاشات الصغيرة) --- */
+@media (max-width: 767px) {
+  .desktop-header { display: none !important; }
+  
+  .mobile-header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    direction: rtl;
+  }
+  
+  .mobile-right { display: flex; gap: 15px; }
+  .mobile-left { display: flex; align-items: center; gap: 10px; }
+  
+  .active-tab {
+    color: #4285f4;
+    font-weight: bold;
+    border-bottom: 3px solid #4285f4;
+    padding-bottom: 2px;
+  }
+
+  .mobile-header .apps-dropdown {
+    width: 90vw;
+    left: 5vw;
+    position: fixed;
+    top: 60px;
+  }
+}
+
+/* --- تنسيقات العناصر الداخلية --- */
+.apps-container { position: relative; }
+.apps-icon { cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.apps-icon svg { width: 24px; height: 24px; fill: #5f6368; }
+
+.apps-dropdown {
+  display: none;
+  background: #f8fafd;
+  border-radius: 28px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  z-index: 2000;
+}
+
+.app-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #1f1f1f; font-size: 12px; }
+.app-item img { width: 40px; height: 40px; margin-bottom: 8px; }
+.profile-img { width: 32px; height: 32px; border-radius: 50%; cursor: default; }
   </style>
 </head>
 <body>
-
-<header>
-  <a href="https://mail.google.com" target="_blank">Gmail</a>
-  <a href="images.html">صور</a>
-  
-  <div class="apps-container">
-    <div class="apps-icon" onclick="toggleApps(event)">
-<svg viewBox="0 0 24 24">
-    <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
-  </svg>
-</div>
-    
-    <div id="appsMenu" class="apps-dropdown">
-      <a href="https://www.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png" alt="بحث">
-        <span>بحث</span>
-      </a>
-      <a href="https://maps.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg" alt="خرائط">
-        <span>خرائط</span>
-      </a>
-      <a href="https://mail.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail">
-        <span>Gmail</span>
-      </a>
-      <a href="https://www.youtube.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" alt="YouTube">
-        <span>YouTube</span>
-      </a>
-      <a href="https://drive.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Drive">
-        <span>Drive</span>
-      </a>
-      <a href="https://gemini.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/1024px-Google_Gemini_logo.svg.png" alt="Gemini">
-        <span>Gemini</span>
-      </a>
-      <a href="https://photos.google.com" class="app-item">
-        <img src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Icon_White_BG.width-500.format-webp.webp" alt="صور">
-        <span>صور</span>
-      </a>
-      <a href="https://translate.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Google_Translate_logo.svg" alt="ترجمة">
-        <span>ترجمة</span>
-      </a>
-      <a href="https://calendar.google.com" class="app-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="التقويم">
-        <span>التقويم</span>
-      </a>
-    </div>
+<header class="desktop-header">
+  <div class="d-links">
+    <a href="https://mail.google.com" target="_blank">Gmail</a>
+    <a href="images.html">صور</a>
   </div>
-
-  <img src="https://lh3.googleusercontent.com/a/default-user=s64-c" class="profile-img" alt="Profile">
+  
+  <div class="d-actions">
+    <div class="apps-container">
+      <div class="apps-icon" onclick="toggleApps(event)">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+        </svg>
+      </div>
+      
+      <div class="apps-dropdown">
+        <a href="https://www.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png"><span>بحث</span></a>
+        <a href="https://maps.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"><span>خرائط</span></a>
+        <a href="https://mail.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg"><span>Gmail</span></a>
+        <a href="https://www.youtube.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"><span>YouTube</span></a>
+        <a href="https://drive.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"><span>Drive</span></a>
+        <a href="https://gemini.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/1024px-Google_Gemini_logo.svg.png"><span>Gemini</span></a>
+        <a href="https://photos.google.com" class="app-item"><img src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Icon_White_BG.width-500.format-webp.webp"><span>صور</span></a>
+        <a href="https://translate.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Google_Translate_logo.svg"><span>ترجمة</span></a>
+        <a href="https://calendar.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"><span>التقويم</span></a>
+      </div>
+    </div>
+    <img src="https://lh3.googleusercontent.com/a/default-user=s64-c" class="profile-img" alt="Profile">
+  </div>
 </header>
 
+<header class="mobile-header">
+  <div class="mobile-right">
+    <a href="#" class="active-tab">الكل</a>
+    <a href="images.html">صور</a>
+  </div>
+  
+  <div class="mobile-left">
+    <div class="apps-container">
+      <div class="apps-icon" onclick="toggleApps(event)">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+        </svg>
+      </div>
+      <div class="apps-dropdown">
+        <a href="https://www.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png"><span>بحث</span></a>
+        <a href="https://maps.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"><span>خرائط</span></a>
+        <a href="https://mail.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg"><span>Gmail</span></a>
+        <a href="https://www.youtube.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"><span>YouTube</span></a>
+        <a href="https://drive.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"><span>Drive</span></a>
+        <a href="https://gemini.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/1024px-Google_Gemini_logo.svg.png"><span>Gemini</span></a>
+        <a href="https://photos.google.com" class="app-item"><img src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Icon_White_BG.width-500.format-webp.webp"><span>صور</span></a>
+        <a href="https://translate.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Google_Translate_logo.svg"><span>ترجمة</span></a>
+        <a href="https://calendar.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"><span>التقويم</span></a>
+      </div>
+    </div>
+    <img src="https://lh3.googleusercontent.com/a/default-user=s64-c" class="profile-img" alt="Profile">
+  </div>
+</header>
 <div class="logo">
   <span class="blue">j</span><span class="red">o</span><span class="yellow">o</span><span class="blue">j</span><span class="green">l</span><span class="red">e</span>
 </div>
@@ -337,7 +407,11 @@ header a {
 <script>
 function toggleApps(event) {
     event.stopPropagation();
-    const menu = document.getElementById('appsMenu');
+    // العثور على القائمة المنسدلة داخل الهيدر النشط حالياً فقط
+    const container = event.currentTarget.closest('.apps-container');
+    const menu = container.querySelector('.apps-dropdown');
+    
+    // تبديل العرض
     if (menu.style.display === 'grid') {
         menu.style.display = 'none';
     } else {
@@ -345,12 +419,12 @@ function toggleApps(event) {
     }
 }
 
+// إغلاق القوائم عند الضغط في الخارج
 window.onclick = function(event) {
-    const menu = document.getElementById('appsMenu');
     if (!event.target.closest('.apps-container')) {
-        menu.style.display = 'none';
+        document.querySelectorAll('.apps-dropdown').forEach(m => m.style.display = 'none');
     }
-}
+};
 function goToResults(query = null) {
   const q = query || document.getElementById("searchInput").value.trim();
   if (!q) return;
