@@ -9,14 +9,7 @@ export default async function handler(req, res) {
   const start = req.query.start || 1; 
   const CX = process.env.GOOGLE_CX;
 
-  if (!q || q.trim() === "") {
-    return res.status(400).json({ error: "Query parameter 'q' is required" });
-  }
-
-  if (!CX) {
-    return res.status(500).json({ error: "Google CX is missing in environment variables" });
-  }
-
+  // جلب كافة المفاتيح المتوفرة وتنظيف المصفوفة من القيم الفارغة
   const API_KEYS = [
     process.env.GOOGLE_API_KEY_1,
     process.env.GOOGLE_API_KEY_2,
@@ -28,12 +21,13 @@ export default async function handler(req, res) {
     process.env.GOOGLE_API_KEY_8,
     process.env.GOOGLE_API_KEY_9,
     process.env.GOOGLE_API_KEY_10
-  ].filter(key => key);
+  ].filter(key => key && key.trim() !== "");
 
-  if (API_KEYS.length === 0) {
-    return res.status(500).json({ error: "No Google API keys found in environment variables" });
-  }
+  if (!q) return res.status(400).json({ error: "Query is required" });
+  if (!CX) return res.status(500).json({ error: "Google CX missing" });
+  if (API_KEYS.length === 0) return res.status(500).json({ error: "No API Keys configured" });
 
+  // حلقة المرور على المفاتيح
   for (let i = 0; i < API_KEYS.length; i++) {
     const currentKey = API_KEYS[i];
     
@@ -42,21 +36,21 @@ export default async function handler(req, res) {
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      // فحص إذا كان هناك خطأ في الاستجابة
       if (!response.ok) {
-        const errorMessage = data.error?.message || "";
-        
-        // إذا كان الخطأ بسبب نفاد الحصة (سواء كان الكود 429 أو 403)
-        if (response.status === 429 || errorMessage.toLowerCase().includes("quota")) {
-          console.warn(`Key ${i + 1} exhausted (Quota exceeded). Trying next key...`);
-          continue; // الانتقال للمفتاح التالي في الحلقة (Loop)
+        const errorMsg = data.error?.message || "";
+        const reason = data.error?.errors?.[0]?.reason || "";
+
+        // فحص شامل لنفاد الحصة: (كود 429) أو (كود 403 مع رسالة quota)
+        if (response.status === 429 || errorMsg.toLowerCase().includes("quota") || reason === "dailyLimitExceeded") {
+          console.warn(`Key ${i + 1} exhausted. Switching to next...`);
+          continue; // هذا السطر هو الذي يجعل الكود ينتقل للمفتاح التالي
         }
 
-        // إذا كان خطأ آخر غير الحصة، أرجعه للمستخدم
-        return res.status(response.status).json({ error: errorMessage || "Google API Error" });
+        // إذا كان خطأ آخر غير الحصة (مثلاً خطأ في الـ CX)، أظهره للمستخدم وتوقف
+        return res.status(response.status).json({ error: errorMsg });
       }
 
-      // إذا كانت الاستجابة ناجحة، قم بمعالجة البيانات وإرسالها
+      // إذا وصلنا هنا، يعني الطلب نجح بالمفتاح الحالي
       const results = (data.items || []).map(item => ({
         title: item.title || "",
         link: item.link || "",
@@ -68,13 +62,14 @@ export default async function handler(req, res) {
       return res.status(200).json(results);
 
     } catch (err) {
-      console.error(`Error with Key ${i + 1}:`, err.message);
-      if (i === API_KEYS.length - 1) {
-        return res.status(500).json({ error: "All API keys failed or connection error." });
-      }
-      continue;
+      console.error(`Fetch error with key ${i + 1}:`, err.message);
+      // في حالة وجود خطأ في الاتصال، ننتقل للمفتاح التالي
+      continue; 
     }
   }
 
-  return res.status(429).json({ error: "Daily limit reached for all API keys. Please try again tomorrow." });
+  // إذا انتهت الحلقة ولم يتم إرجاع أي نتيجة (يعني كل المفاتيح فشلت)
+  return res.status(429).json({ 
+    error: "جميع مفاتيح البحث استنفدت حصتها اليومية. يرجى المحاولة غداً." 
+  });
 }
