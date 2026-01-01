@@ -89,9 +89,6 @@
     }
 
     .blue{color:#4285F4} .red{color:#EA4335} .yellow{color:#FBBC05} .green{color:#34A853}
-
-
-
     .search-box {
 
       flex: 1;
@@ -137,17 +134,41 @@
       flex: 1; border: none; outline: none; font-size: 16px; padding: 8px; direction: rtl; background: transparent; min-width: 0;
 
     }
+	.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: transform 0.1s;
+}
 
 
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
+}
+@media (max-width: 480px) {
+  .search-wrapper {
+    padding: 6px 10px;
+    gap: 4px;
+  }
 
-    .icon-btn { background: none; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .search-wrapper input {
+    font-size: 15px;
+    padding: 6px;
+  }
 
-    .icon-btn svg { width: 22px; height: 22px; stroke: #5f6368; fill: none; stroke-width: 2; }
+  .icon-btn {
+    padding: 4px;
+  }
 
-    .icon-btn:hover svg { stroke: var(--active-blue); }
-
-
-
+  .icon-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
     /* شريط التصنيفات */
 
     .tabs-container { display: flex; padding: 0 12%; gap: 20px; }
@@ -438,23 +459,38 @@
 
         <div class="search-wrapper">
 
-          <button class="icon-btn" onclick="currentPage=1; performSearch()" title="بحث">
-
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16.65" y1="16.65" x2="22" y2="22"></line></svg>
-
+          <button class="icon-btn" onclick="goToResults()" title="بحث">
+          <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" color="#9aa0a6" height="18" width="18" xmlns="http://www.w3.org/2000/svg" style="color: rgb(154, 160, 166);"><path d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0 0 11.6 0l43.6-43.5a8.2 8.2 0 0 0 0-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"></path></svg>
           </button>
 
           <input id="searchInput" type="text" placeholder="ابحث في الويب..." onkeydown="if(event.key==='Enter'){currentPage=1; performSearch();}"/>
 
           <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
 
-            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+          <svg class="goxjub" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-iml="1669911182876"><path fill="#4285f4" d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z"></path><path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path><path fill="#fbbc05" d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z"></path><path fill="#ea4335" d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z"></path></svg>
 
           </button>
 
           <button class="icon-btn" onclick="imageSearch()" title="بحث بالصورة">
 
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+            <svg version="1.1" id="Standard_product_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 x="0px" y="0px" width="192px" height="192px" viewBox="0 0 192 192" enable-background="new 0 0 192 192" xml:space="preserve">
+<rect id="bounding_box_1_" fill="none" width="192" height="192"/>
+<g id="art_layer">
+	<circle id="Dot" fill="#4285F4" cx="96" cy="104.15" r="28"/>
+	<path id="Red" fill="#EA4335" d="M160,72v40.15V136c0,1.69-0.34,3.29-0.82,4.82v0v0c-1.57,4.92-5.43,8.78-10.35,10.35h0v0
+		c-1.53,0.49-3.13,0.82-4.82,0.82H66l16,16h50h12c4.42,0,8.63-0.9,12.46-2.51c3.83-1.62,7.28-3.96,10.17-6.86
+		c1.45-1.45,2.76-3.03,3.91-4.74c2.3-3.4,3.96-7.28,4.81-11.44c0.43-2.08,0.65-4.24,0.65-6.45v-12V96.15V84l-6-19l-10.82,2.18
+		C159.66,68.71,160,70.31,160,72z"/>
+	<path id="Blue" fill="#4285F4" d="M32,72c0-1.69,0.34-3.29,0.82-4.82c1.57-4.92,5.43-8.78,10.35-10.35C44.71,56.34,46.31,56,48,56
+		h96c1.69,0,3.29,0.34,4.82,0.82c0,0,0,0,0,0L149,45l-17-5l-16-16h-13.44H96h-6.56H76L60,40H48c-17.67,0-32,14.33-32,32v12v20l16,16
+		V72z"/>
+	<path id="Green" fill="#34A853" d="M144,40h-12l16.83,16.83c1.23,0.39,2.39,0.93,3.47,1.59c2.16,1.32,3.97,3.13,5.29,5.29
+		c0.66,1.08,1.2,2.24,1.59,3.47v0L176,84V72C176,54.33,161.67,40,144,40z"/>
+	<path id="Yellow" fill="#FBBC04" d="M48,168h39.89l-16-16H48c-8.82,0-16-7.18-16-16v-23.89l-16-16V136C16,153.67,30.33,168,48,168z
+		"/>
+</g>
+</svg>
 
           </button>
 
