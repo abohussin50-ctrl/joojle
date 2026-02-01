@@ -11,23 +11,20 @@
       "destination": "/index.html"
     },
     {
-<<<<<<< HEAD
-=======
       "source": "/(ar|de|en|es|fr|hi|it|ja|ko|pt|ru|tr|zh)",
-      "destination": "/$1/index.html"
+      "destination": "/$1/public/index.html"
     },
     {
       "source": "/(ar|de|en|es|fr|hi|it|ja|ko|pt|ru|tr|zh)/images",
-      "destination": "/$1/images.html"
+      "destination": "/$1/public/images.html"
     },
     {
->>>>>>> 9de40fd (الرسالة هنا: مثلا رفع الملفات الأولية)
+      "source": "/(ar|de|en|es|fr|hi|it|ja|ko|pt|ru|tr|zh)/(.*)",
+      "destination": "/$1/public/$2"
+    },
+    {
       "source": "/images",
       "destination": "/images.html"
     }
   ]
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 9de40fd (الرسالة هنا: مثلا رفع الملفات الأولية)
