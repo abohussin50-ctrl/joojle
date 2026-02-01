@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>جاري التوجيه... | Redirecting...</title>
+    <script>
+        (function() {
+            // 1. قائمة اللغات المتاحة لديك بناءً على الصورة
+            const supportedLanguages = [
+                'ar', 'de', 'en', 'es', 'fr', 'hi', 
+                'it', 'ja', 'ko', 'pt', 'ru', 'tr', 'zh'
+            ];
+
+            // 2. الحصول على لغة متصفح المستخدم (أول حرفين فقط)
+            const userLang = (navigator.language || navigator.userLanguage).slice(0, 2).toLowerCase();
+
+            // 3. تحديد المجلد المستهدف
+            // إذا كانت لغة المستخدم مدعومة، نوجهه إليها، وإلا نوجهه للإنجليزية كافتراضية
+            const targetDir = supportedLanguages.includes(userLang) ? userLang : 'en';
+
+            // 4. تنفيذ عملية التوجيه
+            window.location.href = './' + targetDir + '/';
+        })();
+    </script>
+</head>
+<body style="background: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <p>جاري تحميل اللغة المناسبة... | Loading your language...</p>
+</body>
+</html>
