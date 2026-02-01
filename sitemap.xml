@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://joojle-one.vercel.app/</loc>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url><loc>https://joojle-one.vercel.app/ar/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/en/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/zh/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/de/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/es/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/fr/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/hi/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/it/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ja/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ko/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/pt/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ru/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/tr/</loc><priority>0.8</priority></url>
+
+</urlset>
