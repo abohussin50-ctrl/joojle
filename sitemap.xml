@@ -6,17 +6,29 @@
     <changefreq>daily</changefreq>
   </url>
   <url><loc>https://joojle-one.vercel.app/ar/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ar/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/en/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/en/index.html</loc><priority>0.8</priority></url>  
   <url><loc>https://joojle-one.vercel.app/zh/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/zh/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/de/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/de/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/es/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/es/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/fr/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/fr/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/hi/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/hi/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/it/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/it/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/ja/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ja/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/ko/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ko/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/pt/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/pt/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/ru/</loc><priority>0.8</priority></url>
+  <url><loc>https://joojle-one.vercel.app/ru/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://joojle-one.vercel.app/tr/</loc><priority>0.8</priority></url>
-
+  <url><loc>https://joojle-one.vercel.app/tr/index.html</loc><priority>0.8</priority></url>
 </urlset>
