@@ -213,6 +213,21 @@
     width: 180px; /* تصغير الشعار في الهاتف */
   }
 }
+.suggestions-list li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.suggestions-list li:hover { background: #f1f3f4; }
+.suggestions-list li::before {
+    content: "🔍";
+    font-size: 14px;
+    filter: grayscale(1);
+}
+.search-box { position: relative; } /* ضروري لتموضع الاقتراحات */
   </style>
 </head>
 <body>
@@ -290,6 +305,8 @@
       placeholder="ابحث في الويب..."
       onkeydown="if(event.key==='Enter')goToResults()"
     />
+	
+    <button id="clearBtn" class="icon-btn" style="display:none; color:#70757a; font-size:18px; border-left: 1px solid #dfe1e5; margin-left: 8px; padding-left: 10px;">&times;</button>
 
       <!-- بحث صوتي -->
       <button class="icon-btn" onclick="voiceSearch()" title="بحث صوتي">
@@ -319,7 +336,7 @@
     </button>
 
     <input type="file" id="imageInput" accept="image/*" hidden />
-
+    <ul id="suggestionsList" style="display:none; list-style:none; margin: 5px auto; padding: 10px 0; width: 100%; max-width: 600px; background: #fff; border-radius: 20px; box-shadow: 0 4px 6px rgba(32,33,36,0.28); text-align: right; position: absolute; left: 0; right: 0; z-index: 1000;"></ul>
   </div>
 </div>
 
@@ -567,24 +584,119 @@ function resetTheme() {
 
 // --- الاختصارات والمشاركة ---
 function copyLink(){ navigator.clipboard.writeText(window.location.href).then(()=>alert("تم نسخ الرابط!")); }
+function createShortcutElement(name, url) {
+    const div = document.createElement("div"); 
+    div.className = "shortcut"; 
+    div.onclick = () => window.open(url, "_blank");
 
-function createShortcutElement(name,url){
-    const div=document.createElement("div"); div.className="shortcut"; div.onclick=()=>window.open(url,"_blank");
-    const circle=document.createElement("div"); circle.className="shortcut-circle"; circle.textContent=name.charAt(0).toUpperCase();
-    const label=document.createElement("div"); label.textContent=name;
-    const del=document.createElement("button"); del.className="delete-btn"; del.textContent="×";
-    del.onclick=(e)=>{ e.stopPropagation(); if(confirm("حذف؟")){ div.remove(); } };
-    div.appendChild(circle); div.appendChild(label); div.appendChild(del);
+    const circle = document.createElement("div"); 
+    circle.className = "shortcut-circle"; 
+    circle.textContent = name.charAt(0).toUpperCase();
+
+    const label = document.createElement("div"); 
+    label.textContent = name;
+
+    const del = document.createElement("button"); 
+    del.className = "delete-btn"; 
+    del.textContent = "×";
+    del.onclick = (e) => { 
+        e.stopPropagation(); 
+        if(confirm("حذف؟")) { 
+            div.remove(); 
+            saveAllShortcuts(); 
+        } 
+    };
+
+    div.appendChild(circle); 
+    div.appendChild(label); 
+    div.appendChild(del);
     return div;
 }
 
-function addShortcut(){
-    const name=prompt("الاسم:"); const url=prompt("الرابط:");
+function addShortcut() {
+    const name = prompt("الاسم:"); 
+    const url = prompt("الرابط:(يجب أن يبدأ بـhttps://)");
     if(name && url) {
-        const container=document.getElementById("shortcuts");
-        container.insertBefore(createShortcutElement(name,url), container.firstChild);
+        const container = document.getElementById("shortcuts");
+        const newShortcut = createShortcutElement(name, url);
+        container.insertBefore(newShortcut, container.firstChild);
+        saveAllShortcuts(); 
     }
 }
+
+function saveAllShortcuts() {
+    const shortcuts = [];
+    document.querySelectorAll('.shortcut').forEach(el => {
+        const name = el.querySelector('div:not(.shortcut-circle)')?.textContent;
+        const delBtn = el.querySelector('.delete-btn');
+        if (delBtn && name) {
+            const url = el.getAttribute('data-url') || ""; 
+            shortcuts.push({ name, url });
+        }
+    });
+    localStorage.setItem('joojleShortcuts', JSON.stringify(shortcuts));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('joojleTheme');
+    if (savedTheme) {
+        const s = JSON.parse(savedTheme);
+        document.getElementById('bgColorPicker').value = s.bgColor || "#ffffff";
+        document.getElementById('textColorPicker').value = s.textColor || "#202124";
+        document.getElementById('bgImageUrl').value = s.bgUrl || "";
+        uploadedImageData = s.uploadedImageData || "";
+        updateTheme();
+    }
+
+    const savedShortcuts = JSON.parse(localStorage.getItem('joojleShortcuts')) || [];
+    const container = document.getElementById("shortcuts");
+    savedShortcuts.forEach(sh => {
+        const el = createShortcutElement(sh.name, sh.url);
+        el.setAttribute('data-url', sh.url);
+        container.insertBefore(el, container.firstChild);
+    });
+});
+const sInput = document.getElementById('searchInput');
+const cBtn = document.getElementById('clearBtn');
+const sList = document.getElementById('suggestionsList');
+
+sInput.addEventListener('input', () => {
+    const val = sInput.value.trim();
+    cBtn.style.display = val.length > 0 ? 'block' : 'none';
+    
+    if (val.length > 0) {
+        fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(val)}`)
+            .then(res => res.json())
+            .then(data => {
+                const suggestions = data[1];
+                if (suggestions.length > 0) {
+                    sList.innerHTML = suggestions.slice(0, 8).map(s => `<li onclick="fillAndSearch('${s}')">${s}</li>`).join('');
+                    sList.style.display = 'block';
+                } else {
+                    sList.style.display = 'none';
+                }
+            });
+    } else {
+        sList.style.display = 'none';
+    }
+});
+
+cBtn.onclick = () => {
+    sInput.value = '';
+    cBtn.style.display = 'none';
+    sList.style.display = 'none';
+    sInput.focus();
+};
+
+function fillAndSearch(text) {
+    sInput.value = text;
+    sList.style.display = 'none';
+    goToResults(text);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-box')) sList.style.display = 'none';
+});
 </script>
 </body>
 </html>
