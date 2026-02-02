@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" dir="ltr">
+<html lang="pt-br" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -145,7 +145,7 @@
     .result a.title:hover { text-decoration: underline; }
     .result .snippet { font-size: 14px; color: #4d5156; line-height: 1.58; word-wrap: break-word; }
 
-    /* Estilização de Vídeos */
+    /* Formatação de Vídeos */
     .video-item {
       display: flex;
       gap: 16px;
@@ -170,14 +170,14 @@
       border: 1.5px solid #fff;
     }
     .video-duration {
-      position: absolute; bottom: 5px; left: 5px;
+      position: absolute; bottom: 5px; right: 5px;
       background: rgba(0,0,0,0.8); color: white;
       font-size: 11px; padding: 1px 4px; border-radius: 4px;
       direction: ltr;
     }
     .video-info-side { flex: 1; }
 
-    /* --- Novo Formato de Paginação --- */
+    /* --- Formatação de Paginação --- */
     .pagination {
       display: flex;
       flex-direction: column;
@@ -221,7 +221,7 @@
       cursor: pointer;
     }
     .prev-btn svg { transform: rotate(180deg); }
-    /* --- Fim do Formato de Paginação --- */
+    /* --- Fim da Formatação de Paginação --- */
 
     .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .img-card img { width: 100%; border-radius: 8px; object-fit: cover; height: 120px; }
@@ -234,6 +234,21 @@
       .video-item { flex-direction: column; }
       .video-thumb-container { width: 100%; height: 180px; }
     }
+    .suggestions-list li {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .suggestions-list li:hover { background: #f1f3f4; }
+    .suggestions-list li::before {
+        content: "🔍";
+        font-size: 14px;
+        filter: grayscale(1);
+    }
+    .search-box { position: relative; }
   </style>
 </head>
 <body>
@@ -251,32 +266,34 @@
           </button>
 
           <input id="searchInput" type="text" placeholder="Pesquisar na web..." onkeydown="if(event.key==='Enter'){currentPage=1; performSearch();}"/>
-
+          <button id="clearBtn" class="icon-btn" style="display:none; color:#70757a; font-size:18px; border-right: 1px solid #dfe1e5; margin-right: 8px; padding-right: 10px;">&times;</button>
           <button class="icon-btn" onclick="voiceSearch()" title="Pesquisa por voz">
           <svg class="goxjub" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-iml="1669911182876"><path fill="#4285f4" d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z"></path><path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path><path fill="#fbbc05" d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z"></path><path fill="#ea4335" d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z"></path></svg>
           </button>
 
           <button class="icon-btn" onclick="imageSearch()" title="Pesquisa por imagem">
             <svg version="1.1" id="Standard_product_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 x="0px" y="0px" width="192px" height="192px" viewBox="0 0 192 192" enable-background="new 0 0 192 192" xml:space="preserve">
+   x="0px" y="0px" width="192px" height="192px" viewBox="0 0 192 192" enable-background="new 0 0 192 192" xml:space="preserve">
 <rect id="bounding_box_1_" fill="none" width="192" height="192"/>
 <g id="art_layer">
-	<circle id="Dot" fill="#4285F4" cx="96" cy="104.15" r="28"/>
-	<path id="Red" fill="#EA4335" d="M160,72v40.15V136c0,1.69-0.34,3.29-0.82,4.82v0v0c-1.57,4.92-5.43,8.78-10.35,10.35h0v0
-		c-1.53,0.49-3.13,0.82-4.82,0.82H66l16,16h50h12c4.42,0,8.63-0.9,12.46-2.51c3.83-1.62,7.28-3.96,10.17-6.86
-		c1.45-1.45,2.76-3.03,3.91-4.74c2.3-3.4,3.96-7.28,4.81-11.44c0.43-2.08,0.65-4.24,0.65-6.45v-12V96.15V84l-6-19l-10.82,2.18
-		C159.66,68.71,160,70.31,160,72z"/>
-	<path id="Blue" fill="#4285F4" d="M32,72c0-1.69,0.34-3.29,0.82-4.82c1.57-4.92,5.43-8.78,10.35-10.35C44.71,56.34,46.31,56,48,56
-		h96c1.69,0,3.29,0.34,4.82,0.82c0,0,0,0,0,0L149,45l-17-5l-16-16h-13.44H96h-6.56H76L60,40H48c-17.67,0-32,14.33-32,32v12v20l16,16
-		V72z"/>
-	<path id="Green" fill="#34A853" d="M144,40h-12l16.83,16.83c1.23,0.39,2.39,0.93,3.47,1.59c2.16,1.32,3.97,3.13,5.29,5.29
-		c0.66,1.08,1.2,2.24,1.59,3.47v0L176,84V72C176,54.33,161.67,40,144,40z"/>
-	<path id="Yellow" fill="#FBBC04" d="M48,168h39.89l-16-16H48c-8.82,0-16-7.18-16-16v-23.89l-16-16V136C16,153.67,30.33,168,48,168z
-		"/>
+  <circle id="Dot" fill="#4285F4" cx="96" cy="104.15" r="28"/>
+  <path id="Red" fill="#EA4335" d="M160,72v40.15V136c0,1.69-0.34,3.29-0.82,4.82v0v0c-1.57,4.92-5.43,8.78-10.35,10.35h0v0
+    c-1.53,0.49-3.13,0.82-4.82,0.82H66l16,16h50h12c4.42,0,8.63-0.9,12.46-2.51c3.83-1.62,7.28-3.96,10.17-6.86
+    c1.45-1.45,2.76-3.03,3.91-4.74c2.3-3.4,3.96-7.28,4.81-11.44c0.43-2.08,0.65-4.24,0.65-6.45v-12V96.15V84l-6-19l-10.82,2.18
+    C159.66,68.71,160,70.31,160,72z"/>
+  <path id="Blue" fill="#4285F4" d="M32,72c0-1.69,0.34-3.29,0.82-4.82c1.57-4.92,5.43-8.78,10.35-10.35C44.71,56.34,46.31,56,48,56
+    h96c1.69,0,3.29,0.34,4.82,0.82c0,0,0,0,0,0L149,45l-17-5l-16-16h-13.44H96h-6.56H76L60,40H48c-17.67,0-32,14.33-32,32v12v20l16,16
+    V72z"/>
+  <path id="Green" fill="#34A853" d="M144,40h-12l16.83,16.83c1.23,0.39,2.39,0.93,3.47,1.59c2.16,1.32,3.97,3.13,5.29,5.29
+    c0.66,1.08,1.2,2.24,1.59,3.47v0L176,84V72C176,54.33,161.67,40,144,40z"/>
+  <path id="Yellow" fill="#FBBC04" d="M48,168h39.89l-16-16H48c-8.82,0-16-7.18-16-16v-23.89l-16-16V136C16,153.67,30.33,168,48,168z
+    "/>
 </g>
 </svg>
           </button>
+
           <input type="file" id="imageInput" accept="image/*" hidden />
+          <ul id="suggestionsList" style="display:none; list-style:none; margin: 5px auto; padding: 10px 0; width: 100%; max-width: 600px; background: #fff; border-radius: 20px; box-shadow: 0 4px 6px rgba(32,33,36,0.28); text-align: left; position: absolute; left: 0; right: 0; z-index: 1000;"></ul>
         </div>
       </div>
     </div>
@@ -317,9 +334,11 @@
     function changeTab(type) {
         currentType = type;
         currentPage = 1;
+
         document.querySelectorAll('.tab').forEach(t => {
             t.classList.remove('active');
         });
+
         const targetTab = document.getElementById(`tab-${type}`);
         if (targetTab) {
             targetTab.classList.add('active');
@@ -327,6 +346,7 @@
             const allTab = document.getElementById('tab-all');
             if (allTab) allTab.classList.add('active');
         }
+
         performSearch();
     }
 
@@ -411,7 +431,7 @@
                     ${item.duration ? `<div class="video-duration">${item.duration}</div>` : ''}
                   </div>
                   <div class="video-info-side">
-                    <div class="snippet">${item.snippet || 'Assista ao vídeo em ' + info.name}</div>
+                    <div class="snippet">${item.snippet || 'Assistir vídeo em ' + info.name}</div>
                   </div>
                 </div>
               `;
@@ -428,7 +448,7 @@
         paginationBox.style.display = "flex";
 
       } catch (err) {
-        container.innerHTML = '<p style="padding: 20px;">Ocorreu um erro de conexão, tente novamente mais tarde.</p>';
+        container.innerHTML = '<p style="padding: 20px;">Ocorreu um erro de conexão. Por favor, tente mais tarde.</p>';
       }
     }
 
@@ -478,7 +498,7 @@
 
     function imageSearch() { document.getElementById("imageInput").click(); }
     document.getElementById("imageInput").onchange = function() {
-      if(this.files[0]) alert("Pesquisando usando a imagem: " + this.files[0].name);
+      if(this.files[0]) alert("Pesquisando com a imagem: " + this.files[0].name);
     };
 
     function voiceSearch() {
@@ -497,11 +517,55 @@
         const params = new URLSearchParams(window.location.search);
         const q = params.get('q');
         const typeFromUrl = params.get('type') || 'all';
+
         if (q) {
             document.getElementById('searchInput').value = q;
             changeTab(typeFromUrl); 
         }
     };
+
+    const sInput = document.getElementById('searchInput');
+    const cBtn = document.getElementById('clearBtn');
+    const sList = document.getElementById('suggestionsList');
+
+    sInput.addEventListener('input', () => {
+        const val = sInput.value.trim();
+        cBtn.style.display = val.length > 0 ? 'block' : 'none';
+        
+        if (val.length > 0) {
+            fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(val)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const suggestions = data[1];
+                    if (suggestions.length > 0) {
+                        sList.innerHTML = suggestions.slice(0, 8).map(s => `<li onclick="fillAndSearch('${s}')">${s}</li>`).join('');
+                        sList.style.display = 'block';
+                    } else {
+                        sList.style.display = 'none';
+                    }
+                });
+        } else {
+            sList.style.display = 'none';
+        }
+    });
+
+    cBtn.onclick = () => {
+        sInput.value = '';
+        cBtn.style.display = 'none';
+        sList.style.display = 'none';
+        sInput.focus();
+    };
+
+    function fillAndSearch(text) {
+        sInput.value = text;
+        sList.style.display = 'none';
+        performSearch();
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-box')) sList.style.display = 'none';
+    });
   </script>
+
 </body>
 </html>
