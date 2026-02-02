@@ -6,35 +6,35 @@
   <title>joojle</title>
   <meta name="google-site-verification" content="SPV5E-84KA3wRJP5qafkJQiErlt7jJnw_R6jZAI_B-s" />	
   <meta name="google-adsense-account" content="ca-pub-7559491443488147">	
-  <meta name="description" content="joojle es un motor de búsqueda inteligente y rápido similar a Google, que te permite buscar en la web de forma fácil y precisa.">
-  <meta name="keywords" content="joojle, joojle buscar, joojle.one, alternativa a joojle, alternativa a google, motor de búsqueda, búsqueda web, búsqueda inteligente, búsqueda avanzada, joojle traductor, joojle imágenes, búsqueda de imágenes, google traductor, google maps, google mail, mejor alternativa a google, motor de búsqueda global, búsqueda de videos, búsqueda de noticias, búsqueda privada, búsqueda anónima, buscador rápido, búsqueda multilingüe, búsqueda segura">
+  <meta name="description" content="joojle es un motor de búsqueda inteligente y rápido similar a Google, que le permite buscar en la web con facilidad y precisión.">
+  <meta name="keywords" content="joojle, joojle search, joojle.one, joojle alternative, google alternative, google search alternative, motor de búsqueda, buscar, búsqueda en español, búsqueda rápida, buscador árabe, alternativa a Google, búsqueda web, búsqueda inteligente, buscador parecido a Google, joogle, google, búsqueda avanzada, traducción joojle, joojle translate, joojle images, búsqueda de imágenes, traductor de google, google maps, gmail, motor de búsqueda de google, mejor alternativa a google, buscador global, búsqueda de video, búsqueda de noticias, joojle maps, joojle mail, joojle videos, joojle news, joojle play, joojle drive, joojle documents, joojle photos, joojle ads, joojle analytics, search engine, web search, private search, anonymous search, fast search engine, multilingual search, búsqueda multilingüe, búsqueda segura, google en español, primera opción de búsqueda, joojle chrome, joojle web store">
   <link rel="icon" href="favicon.png" type="image/png">
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <style>
     body { background:#fff; font-family:Arial, sans-serif; margin:0; padding:0; direction:ltr; text-align:center; transition: background 0.3s, color 0.3s; }
     
-    /* --- Estilos Generales del Encabezado --- */
+    /* --- Estilos generales del encabezado --- */
     header { position: relative; z-index: 1000; }
     header a { text-decoration: none; color: #202124; font-size: 14px; transition: color 0.2s; }
 
-    /* --- Versión de Escritorio --- */
+    /* --- Versión de escritorio --- */
     .desktop-header { display: flex; justify-content: flex-end; align-items: center; padding: 12px 20px; gap: 15px; }
     .d-links { display: flex; gap: 15px; }
     .d-actions { display: flex; align-items: center; gap: 15px; }
 
-    /* --- Versión Móvil --- */
+    /* --- Versión móvil --- */
     .mobile-header { display: none; }
     @media (max-width: 767px) {
       .desktop-header { display: none !important; }
       .mobile-header { display: flex !important; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #eee; }
-      .mobile-left { display: flex; gap: 15px; }
-      .mobile-right { display: flex; align-items: center; gap: 10px; }
+      .mobile-right { display: flex; gap: 15px; }
+      .mobile-left { display: flex; align-items: center; gap: 10px; }
       
       .m-tab { text-decoration: none; color: #5f6368; padding-bottom: 5px; border-bottom: 3px solid transparent; font-size: 14px; }
       .active-tab { color: #4285f4 !important; font-weight: bold; border-bottom: 3px solid #4285f4 !important; }
     }
 
-    /* --- Menú de Aplicaciones --- */
+    /* --- Menú de aplicaciones --- */
     .apps-container { position: relative; }
     .apps-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; }
     .apps-icon:hover { background: rgba(60,64,67,0.1); }
@@ -89,29 +89,26 @@
       width: 24px;
       height: 24px;
     }
-    
+
     @media (max-width: 480px) {
       .search-wrapper {
         padding: 6px 10px;
         gap: 4px;
       }
-
       .search-wrapper input {
         font-size: 15px;
         padding: 6px;
       }
-
       .icon-btn {
         padding: 4px;
       }
-
       .icon-btn svg {
         width: 18px;
         height: 18px;
       }
     }
 
-    /* --- Otros Elementos --- */
+    /* --- Otros elementos --- */
     .shortcuts { margin-top:30px; display:flex; justify-content:center; gap:40px; flex-wrap:wrap; }
     .shortcut { text-align:center; color:#333; font-size:14px; cursor:pointer; position:relative; }
     .shortcut-circle { width:60px; height:60px; background-color:#ffe8dc; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:24px; }
@@ -184,14 +181,14 @@
     }
 
     .d-links a {
-      padding-bottom: 5px;
-      border-bottom: 2px solid transparent;
-      transition: all 0.3s;
+        padding-bottom: 5px;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
     }
 
     .active-link {
-      color: #4285f4 !important;
-      border-bottom: 2px solid #4285f4 !important;
+        color: #4285f4 !important;
+        border-bottom: 2px solid #4285f4 !important;
     }
 
     .logo {
@@ -208,12 +205,26 @@
       user-select: none;
       margin-top: 160px;
     }
-
     @media (max-width: 480px) {
       .main-logo-img {
         width: 180px;
       }
     }
+    .suggestions-list li {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .suggestions-list li:hover { background: #f1f3f4; }
+    .suggestions-list li::before {
+        content: "🔍";
+        font-size: 14px;
+        filter: grayscale(1);
+    }
+    .search-box { position: relative; }
   </style>
 </head>
 <body>
@@ -246,11 +257,11 @@
 </header>
 
 <header class="mobile-header">
-  <div class="mobile-left">
+  <div class="mobile-right">
     <a href="javascript:void(0)" id="tab-all" class="m-tab active-tab" onclick="setSearchMode('all')">Todo</a>
     <a href="javascript:void(0)" id="tab-images" class="m-tab" onclick="setSearchMode('images')">Imágenes</a>
   </div>
-  <div class="mobile-right">
+  <div class="mobile-left">
     <div class="apps-container">
       <div class="apps-icon" onclick="toggleApps(event)">
         <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg>
@@ -285,13 +296,15 @@
     <input
       id="searchInput"
       type="text"
-      placeholder="Buscar en la web..."
+      placeholder="Busca en la web..."
       onkeydown="if(event.key==='Enter')goToResults()"
     />
+	
+    <button id="clearBtn" class="icon-btn" style="display:none; color:#70757a; font-size:18px; border-right: 1px solid #dfe1e5; margin-right: 8px; padding-right: 10px;">×</button>
 
-    <button class="icon-btn" onclick="voiceSearch()" title="Búsqueda por voz">
+      <button class="icon-btn" onclick="voiceSearch()" title="Búsqueda por voz">
 <svg class="goxjub" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-iml="1669911182876"><path fill="#4285f4" d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z"></path><path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path><path fill="#fbbc05" d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z"></path><path fill="#ea4335" d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z"></path></svg>
-    </button>
+      </button>
 
     <button class="icon-btn" onclick="imageSearch()" title="Búsqueda por imagen">
 <svg version="1.1" id="Standard_product_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -313,17 +326,19 @@
 </g>
 </svg>
     </button>
+
     <input type="file" id="imageInput" accept="image/*" hidden />
+    <ul id="suggestionsList" style="display:none; list-style:none; margin: 5px auto; padding: 10px 0; width: 100%; max-width: 600px; background: #fff; border-radius: 20px; box-shadow: 0 4px 6px rgba(32,33,36,0.28); text-align: left; position: absolute; left: 0; right: 0; z-index: 1000;"></ul>
   </div>
 </div>
 
 <div id="results"></div>
 
 <div class="shortcuts" id="shortcuts">
-  <div class="shortcut" onclick="addShortcut()"><div class="shortcut-circle">+</div><div>Añadir acceso directo</div></div>
+  <div class="shortcut" onclick="addShortcut()"><div class="shortcut-circle">+</div><div>Añadir acceso</div></div>
   <div class="shortcut" onclick="copyLink()"><div class="shortcut-circle">S</div><div>Compartir</div></div>
   <div class="shortcut" onclick="window.open('https://chrome.google.com/webstore', '_blank')">
-    <div class="shortcut-circle"><img src="https://ssl.gstatic.com/gb/images/bar/al-icon.png" alt="icono"></div><div>Web Store</div>
+    <div class="shortcut-circle"><img src="https://ssl.gstatic.com/gb/images/bar/al-icon.png" alt="icon"></div><div>Web Store</div>
   </div>
 </div>
 
@@ -336,16 +351,15 @@
   <div class="modal-content">
     <h3>Personalizar joojle</h3>
     
-    <div class="customize-option">
-      <label>Color de fondo:</label>
-      <input type="color" id="bgColorPicker" value="#ffffff" onchange="updateTheme()">
-    </div>
+<div class="customize-option">
+  <label>Color de fondo:</label>
+  <input type="color" id="bgColorPicker" value="#ffffff" onchange="updateTheme()">
+</div>
 
-    <div class="customize-option">
-      <label>Color de texto:</label>
-      <input type="color" id="textColorPicker" value="#000000" onchange="updateTheme()">
-    </div>
-
+<div class="customize-option">
+  <label>Color de texto:</label>
+  <input type="color" id="textColorPicker" value="#000000" onchange="updateTheme()">
+</div>
     <div class="customize-option">
       <label>URL de imagen de fondo:</label>
       <input type="text" id="bgImageUrl" class="input-style" placeholder="https://..." onchange="updateTheme()">
@@ -356,16 +370,13 @@
       <input type="file" id="bgImageFile" accept="image/*" class="input-style" onchange="handleFileUpload(this)">
     </div>
 
-    <button class="close-modal" onclick="closeCustomizeModal()">Guardar y Cerrar</button>
-    <button onclick="resetTheme()" style="background:none; border:none; color:#ea4335; cursor:pointer; width:100%; margin-top:10px; font-size:12px;">Restablecer tema personalizado</button>
+    <button class="close-modal" onclick="closeCustomizeModal()">Guardar y cerrar</button>
+    <button onclick="resetTheme()" style="background:none; border:none; color:#ea4335; cursor:pointer; width:100%; margin-top:10px; font-size:12px;">Restablecer apariencia original</button>
   </div>
 </div>
 
 <script>
-let currentSearchMode = 'all';
-
 function setSearchMode(mode) {
-    currentSearchMode = mode;
     const subtext = document.getElementById('image-subtext');
     const dTabImages = document.getElementById('d-tab-images');
     const mTabAll = document.getElementById('tab-all');
@@ -381,6 +392,25 @@ function setSearchMode(mode) {
         if(dTabImages) dTabImages.classList.remove('active-link');
         if(mTabAll) mTabAll.classList.add('active-tab');
         if(mTabImages) mTabImages.classList.remove('active-tab');
+    }
+}
+
+let currentSearchMode = 'all';
+
+function setSearchMode(mode) {
+    currentSearchMode = mode;
+    const tabAll = document.getElementById('tab-all');
+    const tabImg = document.getElementById('tab-images');
+    const subtext = document.getElementById('image-subtext');
+
+    if (mode === 'images') {
+        tabImg.classList.add('active-tab');
+        tabAll.classList.remove('active-tab');
+        subtext.style.display = 'block';
+    } else {
+        tabAll.classList.add('active-tab');
+        tabImg.classList.remove('active-tab');
+        subtext.style.display = 'none';
     }
 }
 
@@ -412,7 +442,7 @@ window.onclick = function(event) {
 
 function voiceSearch() {
     if (!("webkitSpeechRecognition" in window)) {
-        alert("Tu navegador no soporta la búsqueda por voz.");
+        alert("El navegador no soporta la búsqueda por voz");
         return;
     }
     const recognition = new webkitSpeechRecognition();
@@ -450,7 +480,7 @@ document.getElementById("imageInput").addEventListener("change", function (e) {
                 let foundObject = results[0].label.split(',')[0].trim();
                 window.location.href = `images.html?q=${encodeURIComponent(foundObject)}`;
             } catch (err) {
-                alert("No se pudo analizar la imagen.");
+                alert("No se pudo analizar la imagen");
                 searchInput.value = "";
             }
         };
@@ -493,9 +523,13 @@ function updateTheme() {
         document.body.style.backgroundImage = "none";
     }
 
-    document.querySelectorAll('header a, .shortcut div').forEach(el => {
-        if (!el.classList.contains('shortcut-circle')) {
-            el.style.setProperty('color', textColor, 'important');
+    document.querySelectorAll('header a').forEach(a => {
+        a.style.setProperty('color', textColor, 'important');
+    });
+
+    document.querySelectorAll('.shortcut div').forEach(div => {
+        if (!div.classList.contains('shortcut-circle')) {
+            div.style.setProperty('color', textColor, 'important');
         }
     });
 
@@ -523,24 +557,120 @@ function resetTheme() {
 }
 
 function copyLink(){ navigator.clipboard.writeText(window.location.href).then(()=>alert("¡Enlace copiado!")); }
+function createShortcutElement(name, url) {
+    const div = document.createElement("div"); 
+    div.className = "shortcut"; 
+    div.onclick = () => window.open(url, "_blank");
 
-function createShortcutElement(name,url){
-    const div=document.createElement("div"); div.className="shortcut"; div.onclick=()=>window.open(url,"_blank");
-    const circle=document.createElement("div"); circle.className="shortcut-circle"; circle.textContent=name.charAt(0).toUpperCase();
-    const label=document.createElement("div"); label.textContent=name;
-    const del=document.createElement("button"); del.className="delete-btn"; del.textContent="×";
-    del.onclick=(e)=>{ e.stopPropagation(); if(confirm("¿Eliminar?")){ div.remove(); } };
-    div.appendChild(circle); div.appendChild(label); div.appendChild(del);
+    const circle = document.createElement("div"); 
+    circle.className = "shortcut-circle"; 
+    circle.textContent = name.charAt(0).toUpperCase();
+
+    const label = document.createElement("div"); 
+    label.textContent = name;
+
+    const del = document.createElement("button"); 
+    del.className = "delete-btn"; 
+    del.textContent = "×";
+    del.onclick = (e) => { 
+        e.stopPropagation(); 
+        if(confirm("¿Eliminar?")) { 
+            div.remove(); 
+            saveAllShortcuts(); 
+        } 
+    };
+
+    div.appendChild(circle); 
+    div.appendChild(label); 
+    div.appendChild(del);
     return div;
 }
 
-function addShortcut(){
-    const name=prompt("Nombre:"); const url=prompt("URL:");
+function addShortcut() {
+    const name = prompt("Nombre:"); 
+    const url = prompt("Enlace: (debe empezar con https://)");
     if(name && url) {
-        const container=document.getElementById("shortcuts");
-        container.insertBefore(createShortcutElement(name,url), container.firstChild);
+        const container = document.getElementById("shortcuts");
+        const newShortcut = createShortcutElement(name, url);
+        container.insertBefore(newShortcut, container.firstChild);
+        saveAllShortcuts(); 
     }
 }
+
+function saveAllShortcuts() {
+    const shortcuts = [];
+    document.querySelectorAll('.shortcut').forEach(el => {
+        const name = el.querySelector('div:not(.shortcut-circle)')?.textContent;
+        const delBtn = el.querySelector('.delete-btn');
+        if (delBtn && name) {
+            const url = el.getAttribute('data-url') || ""; 
+            shortcuts.push({ name, url });
+        }
+    });
+    localStorage.setItem('joojleShortcuts', JSON.stringify(shortcuts));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('joojleTheme');
+    if (savedTheme) {
+        const s = JSON.parse(savedTheme);
+        document.getElementById('bgColorPicker').value = s.bgColor || "#ffffff";
+        document.getElementById('textColorPicker').value = s.textColor || "#202124";
+        document.getElementById('bgImageUrl').value = s.bgUrl || "";
+        uploadedImageData = s.uploadedImageData || "";
+        updateTheme();
+    }
+
+    const savedShortcuts = JSON.parse(localStorage.getItem('joojleShortcuts')) || [];
+    const container = document.getElementById("shortcuts");
+    savedShortcuts.forEach(sh => {
+        const el = createShortcutElement(sh.name, sh.url);
+        el.setAttribute('data-url', sh.url);
+        container.insertBefore(el, container.firstChild);
+    });
+});
+
+const sInput = document.getElementById('searchInput');
+const cBtn = document.getElementById('clearBtn');
+const sList = document.getElementById('suggestionsList');
+
+sInput.addEventListener('input', () => {
+    const val = sInput.value.trim();
+    cBtn.style.display = val.length > 0 ? 'block' : 'none';
+    
+    if (val.length > 0) {
+        fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(val)}`)
+            .then(res => res.json())
+            .then(data => {
+                const suggestions = data[1];
+                if (suggestions.length > 0) {
+                    sList.innerHTML = suggestions.slice(0, 8).map(s => `<li onclick="fillAndSearch('${s}')">${s}</li>`).join('');
+                    sList.style.display = 'block';
+                } else {
+                    sList.style.display = 'none';
+                }
+            });
+    } else {
+        sList.style.display = 'none';
+    }
+});
+
+cBtn.onclick = () => {
+    sInput.value = '';
+    cBtn.style.display = 'none';
+    sList.style.display = 'none';
+    sInput.focus();
+};
+
+function fillAndSearch(text) {
+    sInput.value = text;
+    sList.style.display = 'none';
+    goToResults(text);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-box')) sList.style.display = 'none';
+});
 </script>
 </body>
 </html>
