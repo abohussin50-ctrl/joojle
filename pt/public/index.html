@@ -6,14 +6,14 @@
   <title>joojle</title>
   <meta name="google-site-verification" content="SPV5E-84KA3wRJP5qafkJQiErlt7jJnw_R6jZAI_B-s" />	
   <meta name="google-adsense-account" content="ca-pub-7559491443488147">	
-  <meta name="description" content="joojle é um motor de busca inteligente e rápido semelhante ao Google, com o qual você pode pesquisar na web de forma simples e precisa.">
-  <meta name="keywords" content="joojle, joojle buscar, joojle.one, alternativa joojle, alternativa google, motor de busca, pesquisa web, busca inteligente, busca avançada, joojle tradutor, joojle imagens, busca de imagens, google tradutor, google maps, google mail, melhor alternativa ao google, motor de busca global, busca de vídeo, busca de notícias, busca privada, busca anônima, buscador rápido, busca multilíngue, busca segura">
+  <meta name="description" content="joojle é um mecanismo de busca inteligente e rápido semelhante ao Google, permitindo que você pesquise na web com facilidade e precisão.">
+  <meta name="keywords" content="joojle, joojle search, joojle.one, alternativa joojle, alternativa google, alternativa busca google, mecanismo de busca, busca, busca em português, busca rápida, mecanismo de busca inteligente, substituto google, busca web, busca inteligente, motor de busca como Google, joojle imagens, busca de fotos, google tradutor, google maps, gmail, google drive, busca de vídeo, busca de notícias, joojle chrome, joojle web store">
   <link rel="icon" href="favicon.png" type="image/png">
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <style>
     body { background:#fff; font-family:Arial, sans-serif; margin:0; padding:0; direction:ltr; text-align:center; transition: background 0.3s, color 0.3s; }
     
-    /* --- Estilos gerais do cabeçalho --- */
+    /* --- Estilos Gerais do Header --- */
     header { position: relative; z-index: 1000; }
     header a { text-decoration: none; color: #202124; font-size: 14px; transition: color 0.2s; }
 
@@ -27,14 +27,14 @@
     @media (max-width: 767px) {
       .desktop-header { display: none !important; }
       .mobile-header { display: flex !important; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #eee; }
-      .mobile-left { display: flex; gap: 15px; }
-      .mobile-right { display: flex; align-items: center; gap: 10px; }
+      .mobile-right { display: flex; gap: 15px; }
+      .mobile-left { display: flex; align-items: center; gap: 10px; }
       
       .m-tab { text-decoration: none; color: #5f6368; padding-bottom: 5px; border-bottom: 3px solid transparent; font-size: 14px; }
       .active-tab { color: #4285f4 !important; font-weight: bold; border-bottom: 3px solid #4285f4 !important; }
     }
 
-    /* --- Menu de Apps --- */
+    /* --- Menu de Aplicativos --- */
     .apps-container { position: relative; }
     .apps-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; }
     .apps-icon:hover { background: rgba(60,64,67,0.1); }
@@ -47,173 +47,186 @@
     .app-item img { width: 35px; height: 35px; margin-bottom: 8px; }
     .app-item span { color: #1f1f1f; font-size: 11px; font-weight: 500; }
     .profile-img { width: 32px; height: 32px; border-radius: 50%; background: #e1e1e1; object-fit: cover; }
-    
-    .search-box { margin:31px auto; width:600px; max-width:100%; }
-    .search-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px; 
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 999px;
-      padding: 8px 12px;
-      box-shadow: 0 1px 6px rgba(32,33,36,.28);
-      max-width: 600px;
-      margin: auto;
-      box-sizing: border-box;
-      width: 100%;
-    }
+.search-box { margin:31px auto; width:600px; max-width:100%; }
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 6px rgba(32,33,36,.28);
+  max-width: 600px;
+  margin: auto;
+  box-sizing: border-box;
+  width: 100%;
+}
 
-    .search-wrapper input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 16px;
-      padding: 8px;
-      direction: ltr;
-      background: transparent;
-      min-width: 0;
-    }
+.search-wrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 8px;
+  direction: ltr;
+  background: transparent;
+  min-width: 0;
+}
 
-    .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      padding: 4px;
-      transition: transform 0.1s;
-    }
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: transform 0.1s;
+}
 
-    .icon-btn svg {
-      width: 24px;
-      height: 24px;
-    }
-    
-    @media (max-width: 480px) {
-      .search-wrapper {
-        padding: 6px 10px;
-        gap: 4px;
-      }
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
+}
+@media (max-width: 480px) {
+  .search-wrapper {
+    padding: 6px 10px;
+    gap: 4px;
+  }
 
-      .search-wrapper input {
-        font-size: 15px;
-        padding: 6px;
-      }
+  .search-wrapper input {
+    font-size: 15px;
+    padding: 6px;
+  }
 
-      .icon-btn {
-        padding: 4px;
-      }
+  .icon-btn {
+    padding: 4px;
+  }
 
-      .icon-btn svg {
-        width: 18px;
-        height: 18px;
-      }
-    }
+  .icon-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
 
-    /* --- Outros elementos --- */
+    /* --- Outros Elementos --- */
     .shortcuts { margin-top:30px; display:flex; justify-content:center; gap:40px; flex-wrap:wrap; }
     .shortcut { text-align:center; color:#333; font-size:14px; cursor:pointer; position:relative; }
     .shortcut-circle { width:60px; height:60px; background-color:#ffe8dc; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:24px; }
     .delete-btn { position:absolute; top:-8px; right:-8px; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; display:none; }
     .shortcut:hover .delete-btn { display:block; }
     
-    .customize {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      background: #ffe8dc !important;
-      color: #000000 !important;
-      border: 1px solid #dfe1e5;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 999;
-    }
+.customize {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  background: #ffe8dc !important;
+  color: #000000 !important;
+  border: 1px solid #dfe1e5;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+}
 
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1001;
-      left: 0; top: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
-    }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0; top: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
 
-    .modal-content {
-      background-color: #ffffff !important;
-      color: #202124 !important;
-      margin: 5% auto;
-      padding: 25px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 350px;
-      text-align: left;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    }
+.modal-content {
+  background-color: #ffffff !important;
+  color: #202124 !important;
+  margin: 5% auto;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+  text-align: left;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
 
-    .modal-content h3, .modal-content label, .modal-content span {
-      color: #202124 !important;
-      display: block;
-      margin-bottom: 5px;
-    }
+.modal-content h3, .modal-content label, .modal-content span {
+  color: #202124 !important;
+  display: block;
+  margin-bottom: 5px;
+}
 
-    .customize-option { margin-bottom: 15px; }
+.customize-option { margin-bottom: 15px; }
 
-    .input-style {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #dfe1e5;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
+.input-style {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #dfe1e5;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
-    .close-modal {
-      background: #1a73e8;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-    }
+.close-modal {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+/* Estilo das abas no desktop */
+.d-links a {
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
 
-    .d-links a {
-      padding-bottom: 5px;
-      border-bottom: 2px solid transparent;
-      transition: all 0.3s;
-    }
+/* Estado Ativo (linha azul) */
+.active-link {
+    color: #4285f4 !important;
+    border-bottom: 2px solid #4285f4 !important;
+}
 
-    .active-link {
-      color: #4285f4 !important;
-      border-bottom: 2px solid #4285f4 !important;
-    }
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
 
-    .logo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .main-logo-img {
-      width: 220px;
-      height: auto;
-      object-fit: contain;
-      user-select: none;
-      margin-top: 160px;
-    }
-
-    @media (max-width: 480px) {
-      .main-logo-img {
-        width: 180px;
-      }
-    }
+.main-logo-img {
+  width: 220px; 
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  margin-top: 160px;
+}
+@media (max-width: 480px) {
+  .main-logo-img {
+    width: 180px; 
+  }
+}
+.suggestions-list li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.suggestions-list li:hover { background: #f1f3f4; }
+.suggestions-list li::before {
+    content: "🔍";
+    font-size: 14px;
+    filter: grayscale(1);
+}
+.search-box { position: relative; }
   </style>
 </head>
 <body>
@@ -230,8 +243,8 @@
         <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg>
       </div>
       <div class="apps-dropdown">
-        <a href="https://www.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png"><span>Pesquisa</span></a>
-        <a href="https://maps.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"><span>Maps</span></a>
+        <a href="https://www.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png"><span>Busca</span></a>
+        <a href="https://maps.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"><span>Mapas</span></a>
         <a href="https://mail.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg"><span>Gmail</span></a>
         <a href="https://www.youtube.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"><span>YouTube</span></a>
         <a href="https://drive.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"><span>Drive</span></a>
@@ -246,18 +259,18 @@
 </header>
 
 <header class="mobile-header">
-  <div class="mobile-left">
+  <div class="mobile-right">
     <a href="javascript:void(0)" id="tab-all" class="m-tab active-tab" onclick="setSearchMode('all')">Tudo</a>
     <a href="javascript:void(0)" id="tab-images" class="m-tab" onclick="setSearchMode('images')">Imagens</a>
   </div>
-  <div class="mobile-right">
+  <div class="mobile-left">
     <div class="apps-container">
       <div class="apps-icon" onclick="toggleApps(event)">
         <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg>
       </div>
       <div class="apps-dropdown">
-        <a href="https://www.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png"><span>Pesquisa</span></a>
-        <a href="https://maps.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"><span>Maps</span></a>
+        <a href="https://www.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Google-favicon-2015.png"><span>Busca</span></a>
+        <a href="https://maps.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"><span>Mapas</span></a>
         <a href="https://mail.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg"><span>Gmail</span></a>
         <a href="https://www.youtube.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"><span>YouTube</span></a>
         <a href="https://drive.google.com" class="app-item"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg"><span>Drive</span></a>
@@ -273,12 +286,13 @@
 
 <div class="logo">
   <img src="joojle-logo.png" alt="Joojle" class="main-logo-img">
+  
   <div id="image-subtext" style="display: none; color: #4285f4; font-size: 24px; margin-top: -10px; font-weight: 500;">Imagens</div>
 </div>
-
 <div class="search-box">
   <div class="search-wrapper">
-    <button class="icon-btn" onclick="goToResults()" title="Pesquisar">
+
+    <button class="icon-btn" onclick="goToResults()" title="Buscar">
     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" color="#9aa0a6" height="18" width="18" xmlns="http://www.w3.org/2000/svg" style="color: rgb(154, 160, 166);"><path d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0 0 11.6 0l43.6-43.5a8.2 8.2 0 0 0 0-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"></path></svg>
     </button>
 
@@ -288,12 +302,14 @@
       placeholder="Pesquisar na web..."
       onkeydown="if(event.key==='Enter')goToResults()"
     />
+	
+    <button id="clearBtn" class="icon-btn" style="display:none; color:#70757a; font-size:18px; border-right: 1px solid #dfe1e5; margin-right: 8px; padding-right: 10px;">×</button>
 
-    <button class="icon-btn" onclick="voiceSearch()" title="Pesquisa por voz">
+      <button class="icon-btn" onclick="voiceSearch()" title="Pesquisa por voz">
 <svg class="goxjub" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-iml="1669911182876"><path fill="#4285f4" d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z"></path><path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path><path fill="#fbbc05" d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z"></path><path fill="#ea4335" d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z"></path></svg>
-    </button>
+      </button>
 
-    <button class="icon-btn" onclick="imageSearch()" title="Pesquisa por imagens">
+    <button class="icon-btn" onclick="imageSearch()" title="Pesquisa por imagem">
 <svg version="1.1" id="Standard_product_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 	 x="0px" y="0px" width="192px" height="192px" viewBox="0 0 192 192" enable-background="new 0 0 192 192" xml:space="preserve">
 <rect id="bounding_box_1_" fill="none" width="192" height="192"/>
@@ -313,7 +329,9 @@
 </g>
 </svg>
     </button>
+
     <input type="file" id="imageInput" accept="image/*" hidden />
+    <ul id="suggestionsList" style="display:none; list-style:none; margin: 5px auto; padding: 10px 0; width: 100%; max-width: 600px; background: #fff; border-radius: 20px; box-shadow: 0 4px 6px rgba(32,33,36,0.28); text-align: left; position: absolute; left: 0; right: 0; z-index: 1000;"></ul>
   </div>
 </div>
 
@@ -321,7 +339,7 @@
 
 <div class="shortcuts" id="shortcuts">
   <div class="shortcut" onclick="addShortcut()"><div class="shortcut-circle">+</div><div>Adicionar atalho</div></div>
-  <div class="shortcut" onclick="copyLink()"><div class="shortcut-circle">C</div><div>Compartilhar</div></div>
+  <div class="shortcut" onclick="copyLink()"><div class="shortcut-circle">S</div><div>Compartilhar</div></div>
   <div class="shortcut" onclick="window.open('https://chrome.google.com/webstore', '_blank')">
     <div class="shortcut-circle"><img src="https://ssl.gstatic.com/gb/images/bar/al-icon.png" alt="icon"></div><div>Web Store</div>
   </div>
@@ -336,36 +354,32 @@
   <div class="modal-content">
     <h3>Personalizar joojle</h3>
     
-    <div class="customize-option">
-      <label>Cor de fundo:</label>
-      <input type="color" id="bgColorPicker" value="#ffffff" onchange="updateTheme()">
-    </div>
+<div class="customize-option">
+  <label>Cor de fundo:</label>
+  <input type="color" id="bgColorPicker" value="#ffffff" onchange="updateTheme()">
+</div>
 
-    <div class="customize-option">
-      <label>Cor do texto:</label>
-      <input type="color" id="textColorPicker" value="#000000" onchange="updateTheme()">
-    </div>
-
+<div class="customize-option">
+  <label>Cor do texto:</label>
+  <input type="color" id="textColorPicker" value="#000000" onchange="updateTheme()">
+</div>
     <div class="customize-option">
       <label>URL da imagem de fundo:</label>
       <input type="text" id="bgImageUrl" class="input-style" placeholder="https://..." onchange="updateTheme()">
     </div>
 
     <div class="customize-option">
-      <label>Carregar imagem do dispositivo:</label>
+      <label>Upload do seu dispositivo:</label>
       <input type="file" id="bgImageFile" accept="image/*" class="input-style" onchange="handleFileUpload(this)">
     </div>
 
     <button class="close-modal" onclick="closeCustomizeModal()">Salvar e Fechar</button>
-    <button onclick="resetTheme()" style="background:none; border:none; color:#ea4335; cursor:pointer; width:100%; margin-top:10px; font-size:12px;">Redefinir tema</button>
+    <button onclick="resetTheme()" style="background:none; border:none; color:#ea4335; cursor:pointer; width:100%; margin-top:10px; font-size:12px;">Redefinir aparência padrão</button>
   </div>
 </div>
 
 <script>
-let currentSearchMode = 'all';
-
 function setSearchMode(mode) {
-    currentSearchMode = mode;
     const subtext = document.getElementById('image-subtext');
     const dTabImages = document.getElementById('d-tab-images');
     const mTabAll = document.getElementById('tab-all');
@@ -381,6 +395,25 @@ function setSearchMode(mode) {
         if(dTabImages) dTabImages.classList.remove('active-link');
         if(mTabAll) mTabAll.classList.add('active-tab');
         if(mTabImages) mTabImages.classList.remove('active-tab');
+    }
+}
+
+let currentSearchMode = 'all';
+
+function setSearchMode(mode) {
+    currentSearchMode = mode;
+    const tabAll = document.getElementById('tab-all');
+    const tabImg = document.getElementById('tab-images');
+    const subtext = document.getElementById('image-subtext');
+
+    if (mode === 'images') {
+        tabImg.classList.add('active-tab');
+        tabAll.classList.remove('active-tab');
+        subtext.style.display = 'block';
+    } else {
+        tabAll.classList.add('active-tab');
+        tabImg.classList.remove('active-tab');
+        subtext.style.display = 'none';
     }
 }
 
@@ -412,7 +445,7 @@ window.onclick = function(event) {
 
 function voiceSearch() {
     if (!("webkitSpeechRecognition" in window)) {
-        alert("Seu navegador não suporta pesquisa por voz.");
+        alert("Seu navegador não suporta pesquisa por voz");
         return;
     }
     const recognition = new webkitSpeechRecognition();
@@ -450,7 +483,7 @@ document.getElementById("imageInput").addEventListener("change", function (e) {
                 let foundObject = results[0].label.split(',')[0].trim();
                 window.location.href = `images.html?q=${encodeURIComponent(foundObject)}`;
             } catch (err) {
-                alert("Não foi possível analisar a imagem.");
+                alert("Não foi possível analisar a imagem");
                 searchInput.value = "";
             }
         };
@@ -493,9 +526,13 @@ function updateTheme() {
         document.body.style.backgroundImage = "none";
     }
 
-    document.querySelectorAll('header a, .shortcut div').forEach(el => {
-        if (!el.classList.contains('shortcut-circle')) {
-            el.style.setProperty('color', textColor, 'important');
+    document.querySelectorAll('header a').forEach(a => {
+        a.style.setProperty('color', textColor, 'important');
+    });
+
+    document.querySelectorAll('.shortcut div').forEach(div => {
+        if (!div.classList.contains('shortcut-circle')) {
+            div.style.setProperty('color', textColor, 'important');
         }
     });
 
@@ -516,31 +553,126 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function resetTheme() {
-    if(confirm("Deseja voltar à aparência original?")) {
+    if(confirm("Deseja voltar para a aparência original?")) {
         localStorage.removeItem('joojleTheme');
         location.reload();
     }
 }
 
 function copyLink(){ navigator.clipboard.writeText(window.location.href).then(()=>alert("Link copiado!")); }
+function createShortcutElement(name, url) {
+    const div = document.createElement("div"); 
+    div.className = "shortcut"; 
+    div.onclick = () => window.open(url, "_blank");
 
-function createShortcutElement(name,url){
-    const div=document.createElement("div"); div.className="shortcut"; div.onclick=()=>window.open(url,"_blank");
-    const circle=document.createElement("div"); circle.className="shortcut-circle"; circle.textContent=name.charAt(0).toUpperCase();
-    const label=document.createElement("div"); label.textContent=name;
-    const del=document.createElement("button"); del.className="delete-btn"; del.textContent="×";
-    del.onclick=(e)=>{ e.stopPropagation(); if(confirm("Excluir?")){ div.remove(); } };
-    div.appendChild(circle); div.appendChild(label); div.appendChild(del);
+    const circle = document.createElement("div"); 
+    circle.className = "shortcut-circle"; 
+    circle.textContent = name.charAt(0).toUpperCase();
+
+    const label = document.createElement("div"); 
+    label.textContent = name;
+
+    const del = document.createElement("button"); 
+    del.className = "delete-btn"; 
+    del.textContent = "×";
+    del.onclick = (e) => { 
+        e.stopPropagation(); 
+        if(confirm("Excluir?")) { 
+            div.remove(); 
+            saveAllShortcuts(); 
+        } 
+    };
+
+    div.appendChild(circle); 
+    div.appendChild(label); 
+    div.appendChild(del);
     return div;
 }
 
-function addShortcut(){
-    const name=prompt("Nome:"); const url=prompt("URL:");
+function addShortcut() {
+    const name = prompt("Nome:"); 
+    const url = prompt("Link: (deve começar com https://)");
     if(name && url) {
-        const container=document.getElementById("shortcuts");
-        container.insertBefore(createShortcutElement(name,url), container.firstChild);
+        const container = document.getElementById("shortcuts");
+        const newShortcut = createShortcutElement(name, url);
+        container.insertBefore(newShortcut, container.firstChild);
+        saveAllShortcuts(); 
     }
 }
+
+function saveAllShortcuts() {
+    const shortcuts = [];
+    document.querySelectorAll('.shortcut').forEach(el => {
+        const name = el.querySelector('div:not(.shortcut-circle)')?.textContent;
+        const delBtn = el.querySelector('.delete-btn');
+        if (delBtn && name) {
+            const url = el.getAttribute('data-url') || ""; 
+            shortcuts.push({ name, url });
+        }
+    });
+    localStorage.setItem('joojleShortcuts', JSON.stringify(shortcuts));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('joojleTheme');
+    if (savedTheme) {
+        const s = JSON.parse(savedTheme);
+        document.getElementById('bgColorPicker').value = s.bgColor || "#ffffff";
+        document.getElementById('textColorPicker').value = s.textColor || "#202124";
+        document.getElementById('bgImageUrl').value = s.bgUrl || "";
+        uploadedImageData = s.uploadedImageData || "";
+        updateTheme();
+    }
+
+    const savedShortcuts = JSON.parse(localStorage.getItem('joojleShortcuts')) || [];
+    const container = document.getElementById("shortcuts");
+    savedShortcuts.forEach(sh => {
+        const el = createShortcutElement(sh.name, sh.url);
+        el.setAttribute('data-url', sh.url);
+        container.insertBefore(el, container.firstChild);
+    });
+});
+const sInput = document.getElementById('searchInput');
+const cBtn = document.getElementById('clearBtn');
+const sList = document.getElementById('suggestionsList');
+
+sInput.addEventListener('input', () => {
+    const val = sInput.value.trim();
+    cBtn.style.display = val.length > 0 ? 'block' : 'none';
+    
+    if (val.length > 0) {
+        fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(val)}`)
+            .then(res => res.json())
+            .then(data => {
+                const suggestions = data[1];
+                if (suggestions.length > 0) {
+                    sList.innerHTML = suggestions.slice(0, 8).map(s => `<li onclick="fillAndSearch('${s}')">${s}</li>`).join('');
+                    sList.style.display = 'block';
+                } else {
+                    sList.style.display = 'none';
+                }
+            });
+    } else {
+        sList.style.display = 'none';
+    }
+});
+
+cBtn.onclick = () => {
+    sInput.value = '';
+    cBtn.style.display = 'none';
+    sList.style.display = 'none';
+    sInput.focus();
+};
+
+function fillAndSearch(text) {
+    sInput.value = text;
+    sList.style.display = 'none';
+    goToResults(text);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-box')) sList.style.display = 'none';
+});
 </script>
 </body>
 </html>
