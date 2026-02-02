@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>छवि परिणाम - joojle</title>
+  <title>इमेज परिणाम - joojle</title>
 
   <link rel="icon" href="favicon.png" type="image/png">
 
@@ -44,7 +44,7 @@
 
 
 
-    /* ऊपरी हेडर */
+    /* हेडर */
 
     header {
 
@@ -169,7 +169,7 @@
     height: 18px;
   }
 }
-    /* श्रेणियों की पट्टी */
+    /* टैब बार */
 
     .tabs-container { display: flex; padding: 0 12%; gap: 20px; }
 
@@ -321,7 +321,7 @@
 
 
 
-    /* --- नया पृष्ठांकन (Pagination) प्रारूप --- */
+    /* --- पेजिनेशन --- */
 
     .pagination {
 
@@ -409,7 +409,7 @@
 
     .prev-btn svg { transform: rotate(180deg); }
 
-    /* --- पृष्ठांकन प्रारूप का अंत --- */
+    /* --- पेजिनेशन का अंत --- */
 
 
 
@@ -434,7 +434,21 @@
       .video-thumb-container { width: 100%; height: 180px; }
 
     }
-
+.suggestions-list li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.suggestions-list li:hover { background: #f1f3f4; }
+.suggestions-list li::before {
+    content: "🔍";
+    font-size: 14px;
+    filter: grayscale(1);
+}
+.search-box { position: relative; }
   </style>
 
 </head>
@@ -464,14 +478,14 @@
           </button>
 
           <input id="searchInput" type="text" placeholder="वेब पर खोजें..." onkeydown="if(event.key==='Enter'){currentPage=1; performSearch();}"/>
-
-          <button class="icon-btn" onclick="voiceSearch()" title="ध्वनि खोज">
+          <button id="clearBtn" class="icon-btn" style="display:none; color:#70757a; font-size:18px; border-right: 1px solid #dfe1e5; margin-right: 8px; padding-right: 10px;">&times;</button>
+          <button class="icon-btn" onclick="voiceSearch()" title="वॉइस सर्च">
 
           <svg class="goxjub" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-iml="1669911182876"><path fill="#4285f4" d="m12 15c1.66 0 3-1.31 3-2.97v-7.02c0-1.66-1.34-3.01-3-3.01s-3 1.34-3 3.01v7.02c0 1.66 1.34 2.97 3 2.97z"></path><path fill="#34a853" d="m11 18.08h2v3.92h-2z"></path><path fill="#fbbc05" d="m7.05 16.87c-1.27-1.33-2.05-2.83-2.05-4.87h2c0 1.45 0.56 2.42 1.47 3.38v0.32l-1.15 1.18z"></path><path fill="#ea4335" d="m12 16.93a4.97 5.25 0 0 1 -3.54 -1.55l-1.41 1.49c1.26 1.34 3.02 2.13 4.95 2.13 3.87 0 6.99-2.92 6.99-7h-1.99c0 2.92-2.24 4.93-5 4.93z"></path></svg>
 
           </button>
 
-          <button class="icon-btn" onclick="imageSearch()" title="छवि द्वारा खोजें">
+          <button class="icon-btn" onclick="imageSearch()" title="इमेज द्वारा खोजें">
 
             <svg version="1.1" id="Standard_product_icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 	 x="0px" y="0px" width="192px" height="192px" viewBox="0 0 192 192" enable-background="new 0 0 192 192" xml:space="preserve">
@@ -495,7 +509,7 @@
           </button>
 
           <input type="file" id="imageInput" accept="image/*" hidden />
-
+          <ul id="suggestionsList" style="display:none; list-style:none; margin: 5px auto; padding: 10px 0; width: 100%; max-width: 600px; background: #fff; border-radius: 20px; box-shadow: 0 4px 6px rgba(32,33,36,0.28); text-align: left; position: absolute; left: 0; right: 0; z-index: 1000;"></ul>
         </div>
 
       </div>
@@ -514,7 +528,7 @@
 
       <div class="tab" id="tab-image" onclick="changeTab('image')">
 
-        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>छवियां
+        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>इमेज
 
       </div>
 
@@ -570,28 +584,21 @@
 
 
 function changeTab(type) {
-    // 1. वर्तमान खोज प्रकार अपडेट करें
     currentType = type;
-    
-    // 2. अनुभाग बदलने पर पृष्ठ संख्या को शुरुआत पर रीसेट करें
     currentPage = 1;
 
-    // 3. टैब के विज़ुअल लुक को अपडेट करें
     document.querySelectorAll('.tab').forEach(t => {
         t.classList.remove('active');
     });
 
-    // 4. चयनित टैब सक्रिय करें
     const targetTab = document.getElementById(`tab-${type}`);
     if (targetTab) {
         targetTab.classList.add('active');
     } else {
-        // यदि चयनित टैब नहीं मिलता है, तो "सभी" टैब को डिफ़ॉल्ट रूप से सक्रिय करें
         const allTab = document.getElementById('tab-all');
         if (allTab) allTab.classList.add('active');
     }
 
-    // 5. डेटा लाने के लिए फ़ंक्शन कॉल करें
     performSearch();
 }
 
@@ -649,7 +656,6 @@ function changeTab(type) {
 
 
 
-      // परिणामों की पुनरावृत्ति रोकने के लिए प्रारंभ पैरामीटर की गणना करें
       const start = (currentPage - 1) * resultsPerPage;
 
 
@@ -784,7 +790,6 @@ function changeTab(type) {
 
 
 
-        // पृष्ठांकन इंटरफ़ेस अपडेट करें
         renderPagination();
 
         paginationBox.style.display = "flex";
@@ -793,7 +798,7 @@ function changeTab(type) {
 
       } catch (err) {
 
-        container.innerHTML = '<p style="padding: 20px;">कनेक्शन त्रुटि हुई, कृपया बाद में पुन: प्रयास करें।</p>';
+        container.innerHTML = '<p style="padding: 20px;">कनेक्शन में त्रुटि हुई, कृपया बाद में पुनः प्रयास करें।</p>';
 
       }
 
@@ -813,23 +818,18 @@ function renderPagination() {
 
 
 
-      // रंगीन joooooooooojle लोगो बनाएं
-      // j (नीला)
       let logoHTML = '<span class="blue">j</span>'; 
 
       
 
-      // 10 'o' अक्षर उत्पन्न करें
       for(let i=0; i<10; i++) {
 
         if (i === 0) {
 
-          // पहला 'o' (लाल)
           logoHTML += '<span class="red">o</span>';
 
         } else {
 
-          // बाकी 'o' अक्षर (पीला)
           logoHTML += '<span class="yellow">o</span>';
 
         }
@@ -838,7 +838,6 @@ function renderPagination() {
 
       
 
-      // j (नीला) - l (हरा) - e (लाल) जोड़ें
       logoHTML += '<span class="blue">j</span><span class="green">l</span><span class="red">e</span>';
 
       
@@ -847,12 +846,11 @@ function renderPagination() {
 
 
 
-      // पिछला बटन (केवल तभी दिखाई देता है जब आप पहले पृष्ठ पर न हों)
       prevWrap.innerHTML = currentPage > 1 ? `
 
         <li class="nav-btn prev-btn" onclick="goToPage(${currentPage - 1})">
 
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="transform: rotate(180deg);"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
 
           पिछला
 
@@ -860,7 +858,6 @@ function renderPagination() {
 
 
 
-      // पृष्ठ संख्या 1 से 10 तक उत्पन्न करें
       list.innerHTML = '';
 
       for(let i=1; i<=10; i++) {
@@ -879,7 +876,6 @@ function renderPagination() {
 
 
 
-      // अगला बटन (9वें पृष्ठ तक दिखाई देता है)
       nextWrap.innerHTML = currentPage < 10 ? `
 
         <li class="nav-btn next-btn" onclick="goToPage(${currentPage + 1})">
@@ -906,7 +902,7 @@ function renderPagination() {
 
     document.getElementById("imageInput").onchange = function() {
 
-      if(this.files[0]) alert("छवि का उपयोग करके खोजा जा रहा है: " + this.files[0].name);
+      if(this.files[0]) alert("इमेज का उपयोग करके खोजा जा रहा है: " + this.files[0].name);
 
     };
 
@@ -914,7 +910,7 @@ function renderPagination() {
 
     function voiceSearch() {
 
-      if (!('webkitSpeechRecognition' in window)) return alert("आपका ब्राउज़र ध्वनि खोज का समर्थन नहीं करता है।");
+      if (!('webkitSpeechRecognition' in window)) return alert("आपका ब्राउज़र वॉइस सर्च का समर्थन नहीं करता है।");
 
       const rec = new webkitSpeechRecognition();
 
@@ -936,13 +932,54 @@ function renderPagination() {
 window.onload = () => {
     const params = new URLSearchParams(window.location.search);
     const q = params.get('q');
-    const typeFromUrl = params.get('type') || 'all'; 
+    const typeFromUrl = params.get('type') || 'all';
 
     if (q) {
         document.getElementById('searchInput').value = q;
         changeTab(typeFromUrl); 
     }
 };
+const sInput = document.getElementById('searchInput');
+const cBtn = document.getElementById('clearBtn');
+const sList = document.getElementById('suggestionsList');
+
+sInput.addEventListener('input', () => {
+    const val = sInput.value.trim();
+    cBtn.style.display = val.length > 0 ? 'block' : 'none';
+    
+    if (val.length > 0) {
+        fetch(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(val)}`)
+            .then(res => res.json())
+            .then(data => {
+                const suggestions = data[1];
+                if (suggestions.length > 0) {
+                    sList.innerHTML = suggestions.slice(0, 8).map(s => `<li onclick="fillAndSearch('${s}')">${s}</li>`).join('');
+                    sList.style.display = 'block';
+                } else {
+                    sList.style.display = 'none';
+                }
+            });
+    } else {
+        sList.style.display = 'none';
+    }
+});
+
+cBtn.onclick = () => {
+    sInput.value = '';
+    cBtn.style.display = 'none';
+    sList.style.display = 'none';
+    sInput.focus();
+};
+
+function fillAndSearch(text) {
+    sInput.value = text;
+    sList.style.display = 'none';
+    goToResults(text);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-box')) sList.style.display = 'none';
+});
   </script>
 
 </body>
