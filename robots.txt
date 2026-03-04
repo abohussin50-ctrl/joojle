@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+Disallow: /*/index.html
+Disallow: /index.html
+
 Sitemap: https://joojle-one.vercel.app/sitemap.xml
